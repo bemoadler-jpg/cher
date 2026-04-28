@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAJESTIC CORP — Черкизово</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deepest:#04020a;--bg-deep:#07040f;--bg-panel:#0d0819;--bg-card:#110d20;
+  --purple-dark:#2d1655;--purple-mid:#5b2d9e;--purple-bright:#8b5cf6;
+  --purple-neon:#a855f7;--purple-glow:#c084fc;--purple-light:#e9d5ff;
+  --accent-gold:#f59e0b;--accent-cyan:#22d3ee;--accent-red:#ef4444;--accent-green:#10b981;
+  --text-primary:#f1e8ff;--text-secondary:#a78bca;--text-muted:#6b4f8a;
+  --border-dim:rgba(139,92,246,0.15);--border-glow:rgba(168,85,247,0.4);
+  --glow-sm:0 0 8px rgba(168,85,247,0.5);--glow-md:0 0 20px rgba(168,85,247,0.4),0 0 40px rgba(168,85,247,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-deepest);color:var(--text-primary);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.bg-ambient{position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(91,45,158,0.12) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 80% 80%,rgba(45,22,85,0.15) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.app-wrapper{position:relative;z-index:1;display:grid;grid-template-columns:260px 1fr;grid-template-rows:70px 1fr;min-height:100vh;}
+
+/* HEADER */
+.header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:linear-gradient(180deg,rgba(13,8,25,0.98) 0%,rgba(13,8,25,0.9) 100%);border-bottom:1px solid var(--border-glow);box-shadow:0 4px 20px rgba(0,0,0,0.5);position:relative;z-index:100;}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple-neon),var(--accent-gold),var(--purple-neon),transparent);animation:headerLine 4s ease-in-out infinite;}
+@keyframes headerLine{0%,100%{opacity:.6}50%{opacity:1}}
+.header-logo{display:flex;align-items:center;gap:14px;cursor:pointer;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:900;font-size:16px;color:#fff;box-shadow:var(--glow-sm);}
+.logo-title{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;letter-spacing:3px;color:var(--purple-glow);text-shadow:var(--glow-sm);}
+.logo-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent-gold);letter-spacing:2px;opacity:.8;}
+.header-center{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:1px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 6px var(--accent-green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+.header-right{display:flex;align-items:center;gap:16px;}
+.header-notif{position:relative;width:36px;height:36px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:16px;}
+.header-notif:hover{border-color:var(--purple-bright);box-shadow:var(--glow-sm);}
+.notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--accent-red);border-radius:50%;font-size:9px;font-family:'Orbitron',monospace;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 0 6px var(--accent-red);}
+.header-user{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:8px;padding:6px 12px 6px 6px;cursor:pointer;transition:all .2s;}
+.header-user:hover{border-color:var(--purple-bright);}
+.user-avatar{width:28px;height:28px;background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.user-name{font-size:12px;font-weight:600;color:var(--text-primary);}
+.user-rank{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent-gold);letter-spacing:1px;}
+
+/* SIDEBAR */
+.sidebar{background:linear-gradient(180deg,var(--bg-panel) 0%,var(--bg-deep) 100%);border-right:1px solid var(--border-dim);padding:16px 0;overflow-y:auto;}
+.nav-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-muted);padding:10px 20px 6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;margin:1px 8px;border-radius:8px;font-size:14px;font-weight:500;color:var(--text-secondary);border:1px solid transparent;}
+.nav-item:hover{background:rgba(139,92,246,0.08);color:var(--text-primary);border-color:var(--border-dim);}
+.nav-item.active{background:linear-gradient(135deg,rgba(91,45,158,0.3),rgba(139,92,246,0.15));color:var(--purple-glow);border-color:rgba(139,92,246,0.3);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:linear-gradient(180deg,var(--purple-neon),var(--purple-bright));border-radius:0 2px 2px 0;box-shadow:0 0 8px var(--purple-neon);margin-left:-8px;}
+.nav-icon{font-size:17px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--purple-mid);color:var(--purple-light);font-family:'Share Tech Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid rgba(139,92,246,0.4);}
+.nav-badge.red{background:rgba(239,68,68,0.2);color:#f87171;border-color:rgba(239,68,68,0.4);}
+.nav-badge.gold{background:rgba(245,158,11,0.15);color:var(--accent-gold);border-color:rgba(245,158,11,0.3);}
+.sidebar-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-dim),transparent);margin:10px 20px;}
+.sidebar-xp{margin:10px 12px;padding:14px;background:linear-gradient(135deg,rgba(45,22,85,0.4),rgba(13,8,25,0.8));border:1px solid rgba(139,92,246,0.2);border-radius:10px;}
+.xp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.xp-label{font-size:10px;letter-spacing:1px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
+.xp-level{font-family:'Orbitron',monospace;font-size:12px;color:var(--accent-gold);font-weight:700;}
+.xp-bar-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon),var(--accent-gold));border-radius:10px;width:68%;box-shadow:0 0 8px var(--purple-neon);}
+.xp-sub{margin-top:6px;font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
+
+/* MAIN */
+.main-content{overflow-y:auto;padding:24px;background:var(--bg-deepest);}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.page-title{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.page-title-text h1{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;letter-spacing:2px;color:var(--text-primary);}
+.page-title-text p{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;}
+.page-actions{display:flex;gap:10px;}
+.btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.btn-primary{background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:var(--glow-md);}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border-dim);}
+.btn-ghost:hover{border-color:var(--purple-bright);color:var(--text-primary);}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:12px;padding:16px;position:relative;overflow:hidden;transition:all .3s;}
+.stat-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);transform:translateY(-2px);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card:nth-child(1)::before{background:linear-gradient(90deg,var(--purple-neon),var(--purple-mid));}
+.stat-card:nth-child(2)::before{background:linear-gradient(90deg,var(--accent-gold),#92400e);}
+.stat-card:nth-child(3)::before{background:linear-gradient(90deg,var(--accent-green),rgba(16,185,129,0.3));}
+.stat-card:nth-child(4)::before{background:linear-gradient(90deg,var(--accent-cyan),rgba(34,211,238,0.3));}
+.stat-icon{font-size:22px;margin-bottom:8px;}
+.stat-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:700;color:var(--text-primary);line-height:1;}
+.stat-label{font-size:11px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;font-family:'Share Tech Mono',monospace;}
+.stat-delta{position:absolute;top:16px;right:16px;font-size:11px;font-family:'Share Tech Mono',monospace;padding:3px 7px;border-radius:20px;}
+.stat-delta.up{color:var(--accent-green);background:rgba(16,185,129,0.1);}
+.stat-delta.down{color:var(--accent-red);background:rgba(239,68,68,0.1);}
+
+/* PANEL */
+.panel{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:14px;overflow:hidden;transition:border-color .2s;margin-bottom:16px;}
+.panel:hover{border-color:rgba(139,92,246,0.25);}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-dim);background:linear-gradient(135deg,rgba(45,22,85,0.2),transparent);}
+.panel-title{display:flex;align-items:center;gap:10px;font-family:'Orbitron',monospace;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--purple-glow);}
+.panel-action{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple-bright);cursor:pointer;letter-spacing:1px;padding:4px 10px;border:1px solid rgba(139,92,246,0.3);border-radius:20px;transition:all .2s;}
+.panel-action:hover{background:rgba(139,92,246,0.1);color:var(--purple-glow);}
+.panel-body{padding:16px 20px;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+
+/* WEEK PROGRESS */
+.week-progress{margin-bottom:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(45,22,85,0.25),var(--bg-card));border:1px solid var(--border-dim);border-radius:14px;}
+.week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.week-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;color:var(--purple-glow);}
+.week-pct{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--accent-gold);}
+.week-bar-bg{height:8px;background:rgba(255,255,255,0.04);border-radius:10px;overflow:hidden;}
+.week-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple-dark),var(--purple-neon),var(--accent-gold));border-radius:10px;box-shadow:0 0 12px rgba(168,85,247,0.5);}
+.week-days{display:flex;gap:6px;margin-top:10px;}
+.day-pill{flex:1;text-align:center;padding:5px 0;border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text-muted);border:1px solid rgba(255,255,255,0.04);}
+.day-pill.done{background:rgba(139,92,246,0.15);color:var(--purple-glow);border-color:rgba(139,92,246,0.3);}
+.day-pill.today{background:rgba(245,158,11,0.12);color:var(--accent-gold);border-color:rgba(245,158,11,0.3);}
+
+/* TASKS */
+.task-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid rgba(139,92,246,0.06);transition:all .2s;cursor:pointer;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{padding-left:6px;}
+.task-checkbox{width:20px;height:20px;border-radius:5px;border:2px solid var(--border-glow);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s;}
+.task-checkbox.done{background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-color:var(--purple-neon);box-shadow:0 0 8px rgba(168,85,247,0.4);color:#fff;}
+.task-checkbox.done::after{content:'✓';font-size:11px;}
+.task-info{flex:1;}
+.task-name{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:3px;}
+.task-name.done{text-decoration:line-through;color:var(--text-muted);}
+.task-desc{font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:4px;}
+.task-meta{display:flex;gap:10px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:4px;}
+.task-priority{padding:2px 8px;border-radius:20px;font-size:10px;font-family:'Share Tech Mono',monospace;}
+.task-priority.high{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.task-priority.mid{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.25);}
+.task-priority.low{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.25);}
+.task-xp{margin-left:auto;font-family:'Orbitron',monospace;font-size:11px;color:var(--accent-gold);font-weight:700;flex-shrink:0;}
+
+/* LEADERBOARD */
+.leader-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(139,92,246,0.06);}
+.leader-item:last-child{border-bottom:none;}
+.leader-rank{width:28px;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;text-align:center;flex-shrink:0;}
+.rank-1{color:#fbbf24;text-shadow:0 0 8px #fbbf24;}
+.rank-2{color:#e2e8f0;text-shadow:0 0 6px rgba(226,232,240,0.6);}
+.rank-3{color:#c2734a;}
+.rank-other{color:var(--text-muted);}
+.leader-avatar{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;border:1px solid rgba(139,92,246,0.3);}
+.leader-info{flex:1;}
+.leader-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+.leader-role{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-top:1px;}
+.leader-score{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--purple-glow);}
+.leader-bar-wrap{width:70px;}
+.leader-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;margin-top:3px;}
+.leader-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon));box-shadow:0 0 6px var(--purple-neon);}
+.me-tag{background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);color:var(--purple-glow);font-size:9px;font-family:'Share Tech Mono',monospace;padding:1px 5px;border-radius:4px;margin-left:4px;}
+
+/* FAQ */
+.faq-item{border:1px solid var(--border-dim);border-radius:10px;margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.faq-item:hover{border-color:var(--border-glow);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-secondary);transition:color .2s;gap:10px;}
+.faq-q:hover{color:var(--text-primary);}
+.faq-icon{font-size:16px;flex-shrink:0;transition:transform .2s;}
+.faq-type{font-size:9px;font-family:'Share Tech Mono',monospace;padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.faq-type.video{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.faq-type.text{background:rgba(34,211,238,0.08);color:var(--accent-cyan);border:1px solid rgba(34,211,238,0.2);}
+.faq-a{padding:0 16px 14px;font-size:13px;color:var(--text-muted);line-height:1.7;display:none;}
+.faq-a.open{display:block;}
+.faq-video-thumb{margin-top:10px;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:border-color .2s;}
+.faq-video-thumb:hover{border-color:var(--accent-red);}
+.play-btn{width:36px;height:36px;background:rgba(239,68,68,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 12px rgba(239,68,68,0.4);}
+.faq-video-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
+
+/* SUPPORT */
+.form-group{margin-bottom:12px;}
+.form-label{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:6px;}
+.form-input,.form-textarea,.form-select{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;transition:border-color .2s;appearance:none;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--purple-bright);box-shadow:0 0 0 3px rgba(139,92,246,0.1);}
+.form-textarea{resize:none;height:90px;}
+.form-select option{background:var(--bg-panel);}
+
+/* ACHIEVEMENTS */
+.achievements{display:flex;gap:10px;flex-wrap:wrap;}
+.ach-card{background:linear-gradient(135deg,rgba(45,22,85,0.4),rgba(13,8,25,0.8));border:1px solid rgba(139,92,246,0.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex:1;min-width:130px;transition:all .2s;}
+.ach-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);transform:translateY(-1px);}
+.ach-card.locked{opacity:.4;filter:grayscale(.7);}
+.ach-icon{font-size:22px;}
+.ach-title{font-size:12px;font-weight:600;color:var(--text-primary);}
+.ach-sub{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
+
+/* EMPLOYEE */
+.employee-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(139,92,246,0.06);cursor:pointer;transition:all .2s;}
+.employee-row:last-child{border-bottom:none;}
+.employee-row:hover{padding-left:4px;}
+.emp-avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1px solid rgba(139,92,246,0.3);flex-shrink:0;}
+.emp-info{flex:1;min-width:0;}
+.emp-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+.emp-role{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.emp-prog-wrap{width:90px;flex-shrink:0;}
+.emp-prog-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-bottom:4px;}
+.emp-prog-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;}
+.emp-prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon));}
+.emp-status{font-size:9px;font-family:'Share Tech Mono',monospace;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+.emp-status.online{background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.3);}
+.emp-status.offline{background:rgba(107,79,138,0.1);color:var(--text-muted);border:1px solid rgba(107,79,138,0.2);}
+.emp-status.warn{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.3);}
+
+/* DEPT CARD */
+.dept-card{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:12px;padding:18px;margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.dept-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);}
+.dept-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dept-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--purple-glow);letter-spacing:1px;}
+.dept-head{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
+.dept-count{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--purple-glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 10px;border-radius:20px;}
+.dept-roles{display:flex;flex-wrap:wrap;gap:6px;}
+.role-tag{font-size:11px;padding:4px 10px;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:6px;color:var(--text-secondary);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,2,10,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg-panel);border:1px solid var(--border-glow);border-radius:16px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;box-shadow:var(--glow-md);animation:fadeUp .3s ease;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border-dim);}
+.modal-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--purple-glow);letter-spacing:1px;}
+.modal-close{width:32px;height:32px;background:rgba(139,92,246,0.1);border:1px solid var(--border-dim);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:18px;transition:all .2s;}
+.modal-close:hover{border-color:var(--accent-red);color:var(--accent-red);}
+.modal-body{padding:20px 24px;}
+.modal-section{margin-bottom:16px;}
+.modal-section-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple-neon);letter-spacing:2px;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-secondary);line-height:1.8;}
+.func-list{list-style:none;padding:0;}
+.func-list li{padding:6px 0;border-bottom:1px solid rgba(139,92,246,0.06);font-size:13px;color:var(--text-secondary);display:flex;gap:8px;align-items:flex-start;}
+.func-list li::before{content:'▸';color:var(--purple-neon);flex-shrink:0;margin-top:1px;}
+.func-list li:last-child{border-bottom:none;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--purple-dark),var(--bg-panel));border:1px solid var(--border-glow);border-radius:12px;padding:14px 18px;z-index:2000;display:flex;align-items:center;gap:12px;font-size:13px;box-shadow:var(--glow-md);transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-icon{font-size:20px;}
+
+/* TICKET */
+.ticket-item{background:rgba(0,0,0,0.2);border:1px solid var(--border-dim);border-radius:10px;padding:14px;margin-bottom:10px;transition:border-color .2s;}
+.ticket-item:hover{border-color:var(--border-glow);}
+.ticket-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ticket-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.ticket-status{font-size:9px;font-family:'Share Tech Mono',monospace;padding:3px 8px;border-radius:20px;}
+.ticket-status.open{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.3);}
+.ticket-status.closed{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.25);}
+.ticket-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--purple-dark);border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--purple-mid);}
+</style>
+</head>
+<body>
+<div class="bg-ambient"></div>
+<div class="app-wrapper">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo" onclick="showPage('dashboard')">
+    <div class="logo-icon">M</div>
+    <div>
+      <div class="logo-title">MAJESTIC</div>
+      <div class="logo-sub">ЧЕРКИЗОВО · CORP PORTAL</div>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="status-dot"></div>
+    СИСТЕМА ОНЛАЙН · НЕДЕЛЯ 17 · 2025
+  </div>
+  <div class="header-right">
+    <div class="header-notif" onclick="showToast('🔔','У вас 3 непрочитанных уведомления')">
+      🔔<div class="notif-badge">3</div>
+    </div>
+    <div class="header-user">
+      <div class="user-avatar">АД</div>
+      <div>
+        <div class="user-name">Дутов А.Н.</div>
+        <div class="user-rank">LVL 8 · РУК. ОТДЕЛА ГИСИТ</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-xp">
+    <div class="xp-header">
+      <span class="xp-label">ПРОГРЕСС XP</span>
+      <span class="xp-level">⚡ LVL 8</span>
+    </div>
+    <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:72%"></div></div>
+    <div class="xp-sub">720 / 1000 XP до уровня 9</div>
+  </div>
+
+  <div class="nav-label">// ГЛАВНОЕ</div>
+  <div class="nav-item active" data-page="dashboard"><span class="nav-icon">🏠</span> Дашборд</div>
+  <div class="nav-item" data-page="tasks"><span class="nav-icon">📋</span> Мои задачи <span class="nav-badge red">5</span></div>
+  <div class="nav-item" data-page="leaderboard"><span class="nav-icon">🏆</span> Рейтинг <span class="nav-badge gold">↑2</span></div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label">// ОБУЧЕНИЕ</div>
+  <div class="nav-item" data-page="faq"><span class="nav-icon">❓</span> База знаний <span class="nav-badge">8</span></div>
+  <div class="nav-item" data-page="team"><span class="nav-icon">👥</span> Отделы и роли</div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label">// КОММУНИКАЦИЯ</div>
+  <div class="nav-item" data-page="support"><span class="nav-icon">💬</span> Поддержка <span class="nav-badge red">2</span></div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label">// РУКОВОДИТЕЛЬ</div>
+  <div class="nav-item" data-page="manager"><span class="nav-icon">📊</span> Аналитика команды</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+  <!-- ===== PAGE: DASHBOARD ===== -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ПАНЕЛЬ СОТРУДНИКА</h1>
+        <p>// РАБОЧАЯ НЕДЕЛЯ 17 · ОБНОВЛЕНО 28.04.2025</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" onclick="showPage('leaderboard')">🏆 Рейтинг</button>
+        <button class="btn btn-primary" onclick="showPage('support')">✚ Задать вопрос</button>
+      </div>
+    </div>
+
+    <div class="week-progress">
+      <div class="week-header">
+        <span class="week-title">// ПРОГРЕСС НЕДЕЛИ</span>
+        <span class="week-pct">62%</span>
+      </div>
+      <div class="week-bar-bg"><div class="week-bar-fill" style="width:62%"></div></div>
+      <div class="week-days">
+        <div class="day-pill done">ПН</div>
+        <div class="day-pill done">ВТ</div>
+        <div class="day-pill done">СР</div>
+        <div class="day-pill today">ЧТ</div>
+        <div class="day-pill">ПТ</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-val">8</div>
+        <div class="stat-label">ЗАДАЧ НА НЕДЕЛЕ</div>
+        <div class="stat-delta up">+2 новых</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-val">720</div>
+        <div class="stat-label">ОЧКОВ ОПЫТА</div>
+        <div class="stat-delta up">+140</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-val">#3</div>
+        <div class="stat-label">МЕСТО В РЕЙТИНГЕ</div>
+        <div class="stat-delta up">↑2</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val">5/8</div>
+        <div class="stat-label">ВЫПОЛНЕНО</div>
+        <div class="stat-delta down">3 осталось</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📋 БЛИЖАЙШИЕ ЗАДАЧИ</div>
+          <span class="panel-action" onclick="showPage('tasks')">ВСЕ ЗАДАЧИ →</span>
+        </div>
+        <div class="panel-body" id="dash-tasks-list"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🏆 ТОП РЕЙТИНГА</div>
+          <span class="panel-action" onclick="showPage('leaderboard')">ПОЛНЫЙ РЕЙТИНГ →</span>
+        </div>
+        <div class="panel-body" id="dash-leader-list"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🎖️ МОИ ДОСТИЖЕНИЯ</div>
+      </div>
+      <div class="panel-body">
+        <div class="achievements">
+          <div class="ach-card"><div class="ach-icon">🔥</div><div><div class="ach-title">Огненный старт</div><div class="ach-sub">5 задач подряд</div></div></div>
+          <div class="ach-card"><div class="ach-icon">⚡</div><div><div class="ach-title">Спринтер</div><div class="ach-sub">Сдача за 24ч до дедлайна</div></div></div>
+          <div class="ach-card"><div class="ach-icon">🛰️</div><div><div class="ach-title">Инженер GIS</div><div class="ach-sub">10 установок телематики</div></div></div>
+          <div class="ach-card locked"><div class="ach-icon">🌟</div><div><div class="ach-title">Легенда</div><div class="ach-sub">ТОП-1 недели</div></div></div>
+          <div class="ach-card locked"><div class="ach-icon">💎</div><div><div class="ach-title">Мастер</div><div class="ach-sub">LVL 10</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: TASKS ===== -->
+  <div class="page" id="page-tasks">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>МОИ ЗАДАЧИ</h1>
+        <p>// НЕДЕЛЯ 17 · ОТДЕЛ ГЕОИНФОРМАЦИОННЫХ ТЕХНОЛОГИЙ</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" id="filter-all" onclick="filterTasks('all')">Все</button>
+        <button class="btn btn-ghost" id="filter-active" onclick="filterTasks('active')">Активные</button>
+        <button class="btn btn-ghost" id="filter-done" onclick="filterTasks('done')">Выполнено</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📋 СПИСОК ЗАДАЧ НА НЕДЕЛЮ</div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);">XP начисляется за выполнение</span>
+      </div>
+      <div class="panel-body" id="full-tasks-list"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: LEADERBOARD ===== -->
+  <div class="page" id="page-leaderboard">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>РЕЙТИНГ СОТРУДНИКОВ</h1>
+        <p>// СОРЕВНОВАТЕЛЬНЫЙ РЕЖИМ · НЕДЕЛЯ 17</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🏆 ОБЩИЙ ЗАЧЁТ</div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent-gold);">ПРИЗ НЕДЕЛИ: +500 XP ПОБЕДИТЕЛЮ</span>
+      </div>
+      <div class="panel-body" id="full-leader-list"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: FAQ ===== -->
+  <div class="page" id="page-faq">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>БАЗА ЗНАНИЙ</h1>
+        <p>// ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ · ТЕКСТ И ВИДЕО</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🛰️ ГЕОИНФОРМАЦИОННЫЕ ТЕХНОЛОГИИ</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как правильно установить телематическое оборудование?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Перед установкой убедитесь в наличии оборудования на вверенном складе. Проведите диагностику устройства, зафиксируйте серийный номер в отчётности. Подключение выполняется по схеме из регламента ГИСИТ. После установки — тест сигнала GPS и передача данных в ПО мониторинга.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">ИНСТРУКЦИЯ ПО УСТАНОВКЕ · 6:20</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как вести отчётность по вверенному складу?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Ежедневно фиксируйте приход/расход оборудования. Остатки сверяйте с данными в 1С. Отчёт подаётся руководителю каждую пятницу до 17:00 в установленном формате Excel. При расхождении — немедленно уведомите ведущего технического специалиста.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как обработать заявку по навигации в зоне ответственности?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Заявки поступают через Яндекс.Трекер. Примите заявку, присвойте статус «В работе». Выезд на объект — в течение 24 часов. По итогу — акт приёмки, который согласовывает ведущий технический специалист. Закройте заявку в трекере с комментарием.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🚛 АВТОМАТИЗАЦИЯ ТРАНСПОРТНОЙ ЛОГИСТИКИ</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как работать с расхождениями пробегов и топлива?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Открываете отчёт «Расхождение пробегов» в ПО мониторинга. Сверяете с данными путевых листов в 1С АСУ АТП. Расхождение свыше 5% — фиксируется как инцидент. Сим-карты проверяются в ЛК поставщика связи, при необходимости — активация через ЭДО.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">РАБОТА С ОТЧЁТАМИ АТП · 8:45</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как поддерживать пользователей системы 1С АСУ АТП?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Консультации пользователей проводятся по запросу через почтовый ящик АТЛ. Права доступа корректируются через администраторский раздел 1С. CR (запросы на доработку) формируются по шаблону и согласовываются с руководителем. Все обращения фиксируются в Яндекс.Трекере.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как моделировать бизнес-процессы AS IS / TO BE?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Используются нотации BPMN, UML, EPC или IDEF0 — выбор зависит от сложности процесса. AS IS — текущее состояние, TO BE — целевое. Схемы согласовываются с заказчиком, затем передаются разработчикам в виде функциональных требований. Итоговые материалы оформляются в PowerPoint для руководства.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">НОТАЦИИ BPMN/UML · 12:30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как реагировать на тревожные события при транспортировке?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            При получении тревожного сигнала в системе мониторинга — немедленно уточните ситуацию у водителя по телефону. Зафиксируйте событие в журнале инцидентов. При нештатной ситуации уведомите смежные службы и старшего специалиста. Все данные по маршруту доступны в системе видеомониторинга.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">АЛГОРИТМ РЕАГИРОВАНИЯ · 5:10</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как формировать отчётность в ЕСЦ?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Статичные отчёты формируются ежесуточно по установленным шаблонам. Отчёты по запросу — в течение 2 часов с момента поступления запроса. Данные берутся из систем мониторинга, АСК ТТ и 1С. Анализ нарушений — еженедельно, итоги передаются консультанту ЕСЦ.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: SUPPORT ===== -->
+  <div class="page" id="page-support">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ПОДДЕРЖКА</h1>
+        <p>// ЗАДАЙТЕ ВОПРОС · ПОЛУЧИТЕ ОТВЕТ</p>
+      </div>
+    </div>
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">✉️ НОВЫЙ ЗАПРОС</div></div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label class="form-label">// ВАШ ОТДЕЛ</label>
+              <select class="form-select" id="sup-dept">
+                <option>Отдел геоинформационных технологий</option>
+                <option>Отдел автоматизации транспортной логистики</option>
+                <option>Единый ситуационный центр</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ТЕМА ОБРАЩЕНИЯ</label>
+              <select class="form-select" id="sup-topic">
+                <option>Вопрос по задаче</option>
+                <option>Технический вопрос (оборудование)</option>
+                <option>Вопрос по системе 1С/АСУ АТП</option>
+                <option>Вопрос по мониторингу транспорта</option>
+                <option>Вопрос по отчётности</option>
+                <option>Вопрос по XP/рейтингу</option>
+                <option>Прочее</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ОПИСАНИЕ</label>
+              <textarea class="form-textarea" id="sup-text" placeholder="Опишите вопрос подробно..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ПРИОРИТЕТ</label>
+              <select class="form-select" id="sup-priority">
+                <option>Обычный</option>
+                <option>Срочный</option>
+                <option>Критический</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitTicket()">📨 Отправить запрос</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">📂 МОИ ТИКЕТЫ</div></div>
+          <div class="panel-body" id="tickets-list">
+            <div class="ticket-item">
+              <div class="ticket-header">
+                <span class="ticket-title">Расхождение пробега в отчёте</span>
+                <span class="ticket-status closed">ЗАКРЫТ</span>
+              </div>
+              <div class="ticket-meta">24.04.2025 · Технический вопрос · Ответил: Дутов А.Н.</div>
+            </div>
+            <div class="ticket-item">
+              <div class="ticket-header">
+                <span class="ticket-title">Не активируется SIM-карта в ЛК</span>
+                <span class="ticket-status open">В ОБРАБОТКЕ</span>
+              </div>
+              <div class="ticket-meta">26.04.2025 · 1С/АСУ АТП · Ожидание ответа</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">💡 БЫСТРЫЕ ОТВЕТЫ</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="dept-card" style="padding:12px" onclick="showPage('faq')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📖 База знаний</div>
+                <div style="font-size:11px;color:var(--text-muted);">Ответы на типовые вопросы</div>
+              </div>
+              <div class="dept-card" style="padding:12px" onclick="showToast('📞','Горячая линия: +7 (495) 785-15-00')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📞 Горячая линия</div>
+                <div style="font-size:11px;color:var(--text-muted);">Срочные вопросы: +7 (495) 785-15-00</div>
+              </div>
+              <div class="dept-card" style="padding:12px" onclick="showToast('📧','Почта поддержки: atl@cherkizovo.com')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📧 Почта АТЛ</div>
+                <div style="font-size:11px;color:var(--text-muted);">atl@cherkizovo.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: TEAM ===== -->
+  <div class="page" id="page-team">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ОТДЕЛЫ И РОЛИ</h1>
+        <p>// СТРУКТУРА ПОДРАЗДЕЛЕНИЙ · НАЖМИТЕ НА ОТДЕЛ ДЛЯ ДЕТАЛЕЙ</p>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('gis')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">🛰️ ОТДЕЛ ГЕОИНФОРМАЦИОННЫХ ТЕХНОЛОГИЙ</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Дутов А.Н.</div>
+        </div>
+        <div class="dept-count">11 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Инженер по ГИТ</span>
+        <span class="role-tag">Ведущий инженер по ГИТ</span>
+        <span class="role-tag">Ведущий технический специалист</span>
+        <span class="role-tag">Специалист по автоматизации ТЛ</span>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('atl')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">🚛 ОТДЕЛ АВТОМАТИЗАЦИИ ТРАНСПОРТНОЙ ЛОГИСТИКИ</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Лялякина Л.Г.</div>
+        </div>
+        <div class="dept-count">5 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Консультант по автоматизации ТЛ</span>
+        <span class="role-tag">Ведущий консультант по автоматизации ТЛ</span>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('esc')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Куркина И.П.</div>
+        </div>
+        <div class="dept-count">15 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Консультант ЕСЦ</span>
+        <span class="role-tag">Старший специалист</span>
+        <span class="role-tag">Специалист по мониторингу</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: MANAGER ===== -->
+  <div class="page" id="page-manager">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>АНАЛИТИКА КОМАНДЫ</h1>
+        <p>// ВИД РУКОВОДИТЕЛЯ · ПРОГРЕСС СОТРУДНИКОВ</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" onclick="showToast('📊','Экспорт отчёта сформирован')">📊 Экспорт</button>
+        <button class="btn btn-primary" onclick="showToast('➕','Функция назначения задач открыта')">➕ Назначить задачу</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-val">31</div>
+        <div class="stat-label">СОТРУДНИКОВ</div>
+        <div class="stat-delta up">3 отдела</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-val">24</div>
+        <div class="stat-label">ОНЛАЙН СЕЙЧАС</div>
+        <div class="stat-delta up">77%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-val">4</div>
+        <div class="stat-label">ЗАДЕРЖКА ЗАДАЧ</div>
+        <div class="stat-delta down">требует внимания</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-val">71%</div>
+        <div class="stat-label">СРЕДНИЙ ПРОГРЕСС</div>
+        <div class="stat-delta up">+8%</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🛰️ ОТДЕЛ ГИСИТ — ДУТОВ А.Н.</div>
+        <span class="panel-action" onclick="openDeptModal('gis')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-gis"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🚛 ОТДЕЛ АТЛ — ЛЯЛЯКИНА Л.Г.</div>
+        <span class="panel-action" onclick="openDeptModal('atl')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-atl"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР — КУРКИНА И.П.</div>
+        <span class="panel-action" onclick="openDeptModal('esc')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-esc"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toast-icon"></div>
+  <div id="toast-text"></div>
+</div>
+
+<script>
+// ============ DATA ============
+const tasks = [
+  {id:1,name:'Установка телематического оборудования (объект А-14)',desc:'Установить и провести диагностику 3 единиц оборудования на объекте А-14. Зафиксировать серийные номера в складском учёте.',priority:'high',xp:150,day:'ПН',done:true},
+  {id:2,name:'Ведение отчётности по складу (апрель)',desc:'Подготовить ежемесячный отчёт по движению оборудования на вверенном складе. Сверить остатки с 1С.',priority:'mid',xp:80,day:'ВТ',done:true},
+  {id:3,name:'Диагностика неисправного блока GPS #112',desc:'Провести диагностику неисправного навигационного блока. Составить акт и передать на ремонт или списание.',priority:'high',xp:120,day:'ВТ',done:true},
+  {id:4,name:'Обработка заявок по навигации (зона ответственности)',desc:'Обработать все входящие заявки из Яндекс.Трекера по своей зоне ответственности. Закрыть не менее 5 заявок.',priority:'mid',xp:90,day:'СР',done:true},
+  {id:5,name:'Тестирование новинок телематики — демо-образец',desc:'Провести тестирование нового образца телематики от поставщика. Подготовить краткое заключение для руководителя.',priority:'mid',xp:100,day:'СР',done:true},
+  {id:6,name:'Приёмка выполненных работ инженеров ГИСИТ',desc:'Проверить акты выполненных работ от инженеров по своей зоне. Подписать и передать на согласование.',priority:'high',xp:130,day:'ЧТ',done:false},
+  {id:7,name:'Работа с отчётом расхождения топлива (неделя 17)',desc:'Проверить данные по расходу топлива в ПО мониторинга. При расхождениях свыше 5% — зафиксировать инциденты.',priority:'mid',xp:70,day:'ЧТ',done:false},
+  {id:8,name:'Пройти тест по новым регламентам ГИСИТ',desc:'Изучить обновлённый регламент отдела и пройти тест на платформе. Минимальный порог: 80% правильных ответов.',priority:'high',xp:200,day:'ПТ',done:false},
+];
+
+const employees = {
+  gis: [
+    {name:'Сотрудник ГИСИТ 1',role:'Ведущий технический специалист',prog:88,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Сотрудник ГИСИТ 2',role:'Ведущий инженер по ГИТ',prog:75,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Сотрудник ГИСИТ 3',role:'Инженер по ГИТ',prog:62,status:'online',color:'#2d1655,#8b5cf6'},
+    {name:'Сотрудник ГИСИТ 4',role:'Инженер по ГИТ',prog:55,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Специалист ATЛ-ГИСИТ 1',role:'Специалист по авт. ТЛ',prog:70,status:'online',color:'#14532d,#10b981'},
+    {name:'Специалист АТЛ-ГИСИТ 2',role:'Специалист по авт. ТЛ',prog:48,status:'offline',color:'#374151,#9ca3af'},
+  ],
+  atl: [
+    {name:'Лялякина Л.Г.',role:'Руководитель отдела АТЛ',prog:95,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Консультант АТЛ 1',role:'Ведущий консультант АТЛ',prog:82,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Консультант АТЛ 2',role:'Консультант по авт. ТЛ',prog:74,status:'online',color:'#14532d,#10b981'},
+    {name:'Консультант АТЛ 3',role:'Консультант по авт. ТЛ',prog:61,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Консультант АТЛ 4',role:'Консультант по авт. ТЛ',prog:45,status:'offline',color:'#374151,#9ca3af'},
+  ],
+  esc: [
+    {name:'Куркина И.П.',role:'Консультант ЕСЦ / Руководитель',prog:92,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Старший специалист 1',role:'Старший специалист ЕСЦ',prog:85,status:'online',color:'#2d1655,#8b5cf6'},
+    {name:'Старший специалист 2',role:'Старший специалист ЕСЦ',prog:79,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Специалист мониторинга 1',role:'Специалист по мониторингу',prog:67,status:'online',color:'#14532d,#10b981'},
+    {name:'Специалист мониторинга 2',role:'Специалист по мониторингу',prog:63,status:'online',color:'#374151,#9ca3af'},
+    {name:'Специалист мониторинга 3',role:'Специалист по мониторингу',prog:58,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Специалист мониторинга 4',role:'Специалист по мониторингу',prog:55,status:'online',color:'#1e3a5f,#60a5fa'},
+    {name:'Специалист мониторинга 5',role:'Специалист по мониторингу',prog:40,status:'offline',color:'#374151,#6b7280'},
+  ]
+};
+
+const deptInfo = {
+  gis: {
+    title:'🛰️ Отдел геоинформационных технологий',
+    head:'Руководитель: Дутов А.Н.',
+    roles:[
+      {name:'Инженер по геоинформационным технологиям',funcs:['Установка и диагностика телематического оборудования','Ведение отчётности по вверенному складу']},
+      {name:'Ведущий инженер по геоинформационным технологиям',funcs:['Установка и диагностика телематического оборудования','Ведение отчётности по вверенному складу','Координация работ инженеров']},
+      {name:'Ведущий технический специалист',funcs:['Приёмка выполненных работ инженеров ГИСИТ','Обработка заявок по навигации в своей зоне ответственности','Тестирование новинок рынка телематики']},
+      {name:'Специалист по автоматизации транспортной логистики',funcs:['Работа с отчётами: расхождение пробегов, расхождение топлива, оснащённости, исправности','Работа в ЛК поставщика связи, активация SIM-карт','Работа в ПО мониторинга транспорта','Работа с документами поставщиков в 1С, ЭДО, OpenText']},
+    ]
+  },
+  atl: {
+    title:'🚛 Отдел автоматизации транспортной логистики',
+    head:'Руководитель: Лялякина Л.Г.',
+    roles:[
+      {name:'Консультант по автоматизации транспортной логистики',funcs:['Поддержка пользователей системы 1С АСУ АТП: консультирование, контроль прав доступа, обучение','Анализ работы системы через отчёты (расход топлива, контроль пробегов, непроверенные путевые листы)','Подготовка реестров выполненных заявок и задач','Ведение учёта в Яндекс.Трекере','Контроль работы почтового ящика АТЛ','Работа в смежных системах (УПП, ERP, OpenText)','Участие в проектах по развитию автоматизации','Формирование протоколов встреч','Сбор и обработка данных, консолидация массивов из различных источников','Моделирование процессов AS IS / TO BE (BPMN, UML, EPC, IDEF0)','Анализ «узких мест» и поиск зон для оптимизации','Формирование функциональных требований для разработчиков','Анализ рынка специализированного ПО','Оценка экономической целесообразности внедрения ИС','Тестирование и внедрение новых решений, обучение ключевых пользователей','Подготовка презентаций и аналитических материалов для руководства']},
+      {name:'Ведущий консультант по автоматизации транспортной логистики',funcs:['Мониторинг и анализ показателей эффективности пользователей в ИС','Оценка коммерческих результатов, факторный анализ выручки','Моделирование процессов AS IS / TO BE','Разработка методологии, регламентов, инструкций, положений','Формирование и согласование бизнес-требований','Участие в тестировании и внедрении новых решений','Взаимодействие с подрядчиками: работа с системой инцидентов','Подготовка аналитических материалов и презентаций для стейкхолдеров','Консультирование руководителей в рамках проектов и запросов']},
+    ]
+  },
+  esc: {
+    title:'📡 Единый ситуационный центр',
+    head:'Руководитель: Куркина И.П.',
+    roles:[
+      {name:'Консультант ЕСЦ',funcs:['Выстраивание, корректировка и оптимизация бизнес-процессов подразделения','Разработка и актуализация нормативно-справочной документации и инструкций','Управление проектами подразделения','Мониторинг выполнения задач, соблюдение сроков','Разработка, ведение и корректировка отчётности','Наставничество действующих и новых сотрудников','Выстраивание коммуникации со смежными службами','Деловая переписка','Самостоятельное изучение новых материалов','Выполнение поручений руководителей']},
+      {name:'Старший специалист',funcs:['Знание и использование системы мониторинга, видеомониторинга, АСК ТТ, 1С','Координация рабочих процессов специалистов по мониторингу','Проведение обучения специалистов по мониторингу','Обработка запросов смежных служб и подразделений','Формирование статичных отчётностей подразделения','Проведение анализа данных','Участие в проектах подразделения']},
+      {name:'Специалист по мониторингу',funcs:['Знание Регламента и НСИ подразделения и смежных служб','Использование инструментов мониторинга и систем 1С','Оперативное реагирование на тревожные события и нештатные ситуации при транспортировке груза','Отслеживание состояния навигационного оборудования','Анализ данных по нарушениям, транспортировкам груза и движению транспорта','Формирование отчётности','Ведение коммуникации со смежными службами и подразделениями']},
+    ]
+  }
+};
+
+// Build leaderboard from all employees
+const allEmps = [
+  {name:'Специалист мониторинга 1',dept:'ЕСЦ',xp:1240,color:'#78350f,#f59e0b'},
+  {name:'Лялякина Л.Г.',dept:'АТЛ',xp:1180,color:'#14532d,#10b981'},
+  {name:'Дутов А.Н.',dept:'ГИСИТ',xp:720,color:'#2d1655,#8b5cf6',me:true},
+  {name:'Куркина И.П.',dept:'ЕСЦ',xp:690,color:'#1e3a5f,#3b82f6'},
+  {name:'Ведущий консультант АТЛ',dept:'АТЛ',xp:660,color:'#7c2d12,#ea580c'},
+  {name:'Старший специалист 1',dept:'ЕСЦ',xp:610,color:'#374151,#9ca3af'},
+  {name:'Специалист ATЛ-ГИСИТ 1',dept:'ГИСИТ',xp:580,color:'#1e3a5f,#60a5fa'},
+  {name:'Консультант АТЛ 2',dept:'АТЛ',xp:540,color:'#78350f,#ca8a04'},
+];
+
+// ============ RENDER ============
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+function renderTaskItem(t, compact=false){
+  return `<div class="task-item" onclick="toggleTask(${t.id})">
+    <div class="task-checkbox ${t.done?'done':''}"></div>
+    <div class="task-info">
+      <div class="task-name ${t.done?'done':''}">${t.name}</div>
+      ${!compact?`<div class="task-desc">${t.desc}</div>`:''}
+      <div class="task-meta"><span>📅 ${t.day}</span><span class="task-priority ${t.priority}">${t.priority==='high'?'ВЫСОКИЙ':t.priority==='mid'?'СРЕДНИЙ':'НИЗКИЙ'}</span></div>
+    </div>
+    <div class="task-xp">+${t.xp} XP</div>
+  </div>`;
+}
+
+function renderLeaderItem(emp, rank){
+  const colors = ['rank-1','rank-2','rank-3'];
+  const rankClass = rank<=3?colors[rank-1]:'rank-other';
+  const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+  const maxXp = allEmps[0].xp;
+  const pct = Math.round(emp.xp/maxXp*100);
+  return `<div class="leader-item">
+    <div class="leader-rank ${rankClass}">${typeof medal==='number'?medal:medal}</div>
+    <div class="leader-avatar" style="background:linear-gradient(135deg,#${emp.color.split(',')[0].replace('#','')},#${emp.color.split(',')[1].replace('#','')}">${initials(emp.name)}</div>
+    <div class="leader-info">
+      <div class="leader-name">${emp.name}${emp.me?'<span class="me-tag">ВЫ</span>':''}</div>
+      <div class="leader-role">${emp.dept}</div>
+    </div>
+    <div class="leader-bar-wrap">
+      <div class="leader-bar"><div class="leader-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="leader-score" ${emp.me?'style="color:var(--purple-glow)"':''}>${emp.xp}</div>
+  </div>`;
+}
+
+function renderEmpRow(e){
+  const ini = initials(e.name);
+  const colors = e.color.split(',');
+  return `<div class="employee-row">
+    <div class="emp-avatar" style="background:linear-gradient(135deg,${colors[0]},${colors[1]})">${ini}</div>
+    <div class="emp-info">
+      <div class="emp-name">${e.name}</div>
+      <div class="emp-role">${e.role.toUpperCase()}</div>
+    </div>
+    <div class="emp-prog-wrap">
+      <div class="emp-prog-label"><span>ПРОГРЕСС</span><span>${e.prog}%</span></div>
+      <div class="emp-prog-bar"><div class="emp-prog-fill" style="width:${e.prog}%"></div></div>
+    </div>
+    <div class="emp-status ${e.status}">${e.status==='online'?'ОНЛАЙН':e.status==='offline'?'ОФФЛАЙН':'ЗАДЕРЖКА'}</div>
+  </div>`;
+}
+
+function buildAll(){
+  // Dash tasks (first 5)
+  const dt = tasks.slice(0,5).map(t=>renderTaskItem(t,true)).join('');
+  document.getElementById('dash-tasks-list').innerHTML = dt;
+
+  // Dash leaders (top 5)
+  const dl = allEmps.slice(0,5).map((e,i)=>renderLeaderItem(e,i+1)).join('');
+  document.getElementById('dash-leader-list').innerHTML = dl;
+
+  // Full tasks
+  document.getElementById('full-tasks-list').innerHTML = tasks.map(t=>renderTaskItem(t)).join('');
+
+  // Full leaderboard
+  document.getElementById('full-leader-list').innerHTML = allEmps.map((e,i)=>renderLeaderItem(e,i+1)).join('');
+
+  // Manager panels
+  ['gis','atl','esc'].forEach(k=>{
+    document.getElementById('manager-'+k).innerHTML = employees[k].map(renderEmpRow).join('');
+  });
+}
+buildAll();
+
+// ============ NAVIGATION ============
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-page="${name}"]`);
+  if(nav) nav.classList.add('active');
+  document.querySelector('.main-content').scrollTop=0;
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+  item.addEventListener('click',function(){showPage(this.dataset.page);});
+});
+
+// ============ TASKS ============
+function toggleTask(id){
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  t.done = !t.done;
+  buildAll();
+  if(t.done) showToast('⚡',`+${t.xp} XP! Задача выполнена`);
+}
+
+let taskFilter = 'all';
+function filterTasks(f){
+  taskFilter = f;
+  document.querySelectorAll('#page-tasks .btn-ghost').forEach(b=>b.style.borderColor='');
+  document.getElementById('filter-'+f).style.borderColor='var(--purple-neon)';
+  let filtered = tasks;
+  if(f==='active') filtered=tasks.filter(t=>!t.done);
+  if(f==='done') filtered=tasks.filter(t=>t.done);
+  document.getElementById('full-tasks-list').innerHTML = filtered.map(t=>renderTaskItem(t)).join('');
+}
+
+// ============ FAQ ============
+function toggleFaq(el){
+  const ans=el.nextElementSibling;
+  const icon=el.querySelector('.faq-icon');
+  const isOpen=ans.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a=>a.classList.remove('open'));
+  document.querySelectorAll('.faq-icon').forEach(i=>i.style.transform='');
+  if(!isOpen){ans.classList.add('open');icon.style.transform='rotate(180deg)';}
+}
+
+// ============ SUPPORT ============
+let ticketCount=2;
+function submitTicket(){
+  const text=document.getElementById('sup-text').value.trim();
+  if(!text){showToast('⚠️','Заполните описание обращения');return;}
+  ticketCount++;
+  const dept=document.getElementById('sup-dept').value;
+  const topic=document.getElementById('sup-topic').value;
+  const priority=document.getElementById('sup-priority').value;
+  const newTicket=`<div class="ticket-item">
+    <div class="ticket-header">
+      <span class="ticket-title">${topic}</span>
+      <span class="ticket-status open">В ОБРАБОТКЕ</span>
+    </div>
+    <div class="ticket-meta">28.04.2025 · ${dept.split(' ')[0]} · Приоритет: ${priority}</div>
+  </div>`;
+  document.getElementById('tickets-list').insertAdjacentHTML('afterbegin',newTicket);
+  document.getElementById('sup-text').value='';
+  showToast('✅','Запрос #'+ticketCount+' отправлен! Ответим в течение 2 рабочих дней.');
+}
+
+// ============ MODAL ============
+function openDeptModal(key){
+  const d=deptInfo[key];
+  let html=`<div class="modal-section">
+    <div class="modal-section-title">РУКОВОДИТЕЛЬ</div>
+    <div class="modal-text">${d.head}</div>
+  </div>`;
+  d.roles.forEach(r=>{
+    html+=`<div class="modal-section">
+      <div class="modal-section-title">// ${r.name.toUpperCase()}</div>
+      <ul class="func-list">${r.funcs.map(f=>`<li>${f}</li>`).join('')}</ul>
+    </div>`;
+  });
+  document.getElementById('modal-title').textContent=d.title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ============ TOAST ============
+let toastTimer;
+function showToast(icon,text){
+  clearTimeout(toastTimer);
+  document.getElementById('toast-icon').textContent=icon;
+  document.getElementById('toast-text').textContent=text;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
