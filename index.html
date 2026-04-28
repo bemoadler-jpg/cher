@@ -3,1237 +3,1170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Корпоративный портал</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<title>MAJESTIC CORP — Черкизово</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* ============ RESET & VARS ============ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:       #0a0c10;
-  --surface:  #111318;
-  --card:     #161b24;
-  --border:   #1e2535;
-  --border2:  #263045;
-  --accent:   #3b7fff;
-  --accent2:  #1a5cdb;
-  --green:    #22c55e;
-  --red:      #ef4444;
-  --amber:    #f59e0b;
-  --text:     #e2e8f0;
-  --muted:    #64748b;
-  --muted2:   #94a3b8;
-  --font:     'DM Sans', sans-serif;
-  --mono:     'DM Mono', monospace;
-  --display:  'Syne', sans-serif;
+  --bg-deepest:#04020a;--bg-deep:#07040f;--bg-panel:#0d0819;--bg-card:#110d20;
+  --purple-dark:#2d1655;--purple-mid:#5b2d9e;--purple-bright:#8b5cf6;
+  --purple-neon:#a855f7;--purple-glow:#c084fc;--purple-light:#e9d5ff;
+  --accent-gold:#f59e0b;--accent-cyan:#22d3ee;--accent-red:#ef4444;--accent-green:#10b981;
+  --text-primary:#f1e8ff;--text-secondary:#a78bca;--text-muted:#6b4f8a;
+  --border-dim:rgba(139,92,246,0.15);--border-glow:rgba(168,85,247,0.4);
+  --glow-sm:0 0 8px rgba(168,85,247,0.5);--glow-md:0 0 20px rgba(168,85,247,0.4),0 0 40px rgba(168,85,247,0.2);
 }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-deepest);color:var(--text-primary);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.bg-ambient{position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(91,45,158,0.12) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 80% 80%,rgba(45,22,85,0.15) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.app-wrapper{position:relative;z-index:1;display:grid;grid-template-columns:260px 1fr;grid-template-rows:70px 1fr;min-height:100vh;}
 
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.6; }
+/* HEADER */
+.header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:linear-gradient(180deg,rgba(13,8,25,0.98) 0%,rgba(13,8,25,0.9) 100%);border-bottom:1px solid var(--border-glow);box-shadow:0 4px 20px rgba(0,0,0,0.5);position:relative;z-index:100;}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purple-neon),var(--accent-gold),var(--purple-neon),transparent);animation:headerLine 4s ease-in-out infinite;}
+@keyframes headerLine{0%,100%{opacity:.6}50%{opacity:1}}
+.header-logo{display:flex;align-items:center;gap:14px;cursor:pointer;}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:900;font-size:16px;color:#fff;box-shadow:var(--glow-sm);}
+.logo-title{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;letter-spacing:3px;color:var(--purple-glow);text-shadow:var(--glow-sm);}
+.logo-sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent-gold);letter-spacing:2px;opacity:.8;}
+.header-center{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:1px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 6px var(--accent-green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+.header-right{display:flex;align-items:center;gap:16px;}
+.header-notif{position:relative;width:36px;height:36px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:16px;}
+.header-notif:hover{border-color:var(--purple-bright);box-shadow:var(--glow-sm);}
+.notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--accent-red);border-radius:50%;font-size:9px;font-family:'Orbitron',monospace;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 0 6px var(--accent-red);}
+.header-user{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1px solid var(--border-dim);border-radius:8px;padding:6px 12px 6px 6px;cursor:pointer;transition:all .2s;}
+.header-user:hover{border-color:var(--purple-bright);}
+.user-avatar{width:28px;height:28px;background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.user-name{font-size:12px;font-weight:600;color:var(--text-primary);}
+.user-rank{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent-gold);letter-spacing:1px;}
 
-/* ============ LAYOUT ============ */
-#app { display: flex; height: 100vh; overflow: hidden; }
+/* SIDEBAR */
+.sidebar{background:linear-gradient(180deg,var(--bg-panel) 0%,var(--bg-deep) 100%);border-right:1px solid var(--border-dim);padding:16px 0;overflow-y:auto;}
+.nav-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--text-muted);padding:10px 20px 6px;text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:all .2s;position:relative;margin:1px 8px;border-radius:8px;font-size:14px;font-weight:500;color:var(--text-secondary);border:1px solid transparent;}
+.nav-item:hover{background:rgba(139,92,246,0.08);color:var(--text-primary);border-color:var(--border-dim);}
+.nav-item.active{background:linear-gradient(135deg,rgba(91,45,158,0.3),rgba(139,92,246,0.15));color:var(--purple-glow);border-color:rgba(139,92,246,0.3);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:linear-gradient(180deg,var(--purple-neon),var(--purple-bright));border-radius:0 2px 2px 0;box-shadow:0 0 8px var(--purple-neon);margin-left:-8px;}
+.nav-icon{font-size:17px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--purple-mid);color:var(--purple-light);font-family:'Share Tech Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid rgba(139,92,246,0.4);}
+.nav-badge.red{background:rgba(239,68,68,0.2);color:#f87171;border-color:rgba(239,68,68,0.4);}
+.nav-badge.gold{background:rgba(245,158,11,0.15);color:var(--accent-gold);border-color:rgba(245,158,11,0.3);}
+.sidebar-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-dim),transparent);margin:10px 20px;}
+.sidebar-xp{margin:10px 12px;padding:14px;background:linear-gradient(135deg,rgba(45,22,85,0.4),rgba(13,8,25,0.8));border:1px solid rgba(139,92,246,0.2);border-radius:10px;}
+.xp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.xp-label{font-size:10px;letter-spacing:1px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
+.xp-level{font-family:'Orbitron',monospace;font-size:12px;color:var(--accent-gold);font-weight:700;}
+.xp-bar-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon),var(--accent-gold));border-radius:10px;width:68%;box-shadow:0 0 8px var(--purple-neon);}
+.xp-sub{margin-top:6px;font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
 
-/* Sidebar */
-#sidebar {
-  width: 240px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  transition: transform 0.3s;
-}
+/* MAIN */
+.main-content{overflow-y:auto;padding:24px;background:var(--bg-deepest);}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
-}
+.page-title{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.page-title-text h1{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;letter-spacing:2px;color:var(--text-primary);}
+.page-title-text p{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;}
+.page-actions{display:flex;gap:10px;}
+.btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.btn-primary{background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:var(--glow-md);}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border-dim);}
+.btn-ghost:hover{border-color:var(--purple-bright);color:var(--text-primary);}
 
-.sidebar-logo h2 {
-  font-family: var(--display);
-  font-size: 16px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.3px;
-}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:12px;padding:16px;position:relative;overflow:hidden;transition:all .3s;}
+.stat-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);transform:translateY(-2px);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card:nth-child(1)::before{background:linear-gradient(90deg,var(--purple-neon),var(--purple-mid));}
+.stat-card:nth-child(2)::before{background:linear-gradient(90deg,var(--accent-gold),#92400e);}
+.stat-card:nth-child(3)::before{background:linear-gradient(90deg,var(--accent-green),rgba(16,185,129,0.3));}
+.stat-card:nth-child(4)::before{background:linear-gradient(90deg,var(--accent-cyan),rgba(34,211,238,0.3));}
+.stat-icon{font-size:22px;margin-bottom:8px;}
+.stat-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:700;color:var(--text-primary);line-height:1;}
+.stat-label{font-size:11px;color:var(--text-muted);letter-spacing:1px;margin-top:4px;font-family:'Share Tech Mono',monospace;}
+.stat-delta{position:absolute;top:16px;right:16px;font-size:11px;font-family:'Share Tech Mono',monospace;padding:3px 7px;border-radius:20px;}
+.stat-delta.up{color:var(--accent-green);background:rgba(16,185,129,0.1);}
+.stat-delta.down{color:var(--accent-red);background:rgba(239,68,68,0.1);}
 
-.sidebar-logo p {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: var(--mono);
-  margin-top: 2px;
-}
+/* PANEL */
+.panel{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:14px;overflow:hidden;transition:border-color .2s;margin-bottom:16px;}
+.panel:hover{border-color:rgba(139,92,246,0.25);}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-dim);background:linear-gradient(135deg,rgba(45,22,85,0.2),transparent);}
+.panel-title{display:flex;align-items:center;gap:10px;font-family:'Orbitron',monospace;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--purple-glow);}
+.panel-action{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple-bright);cursor:pointer;letter-spacing:1px;padding:4px 10px;border:1px solid rgba(139,92,246,0.3);border-radius:20px;transition:all .2s;}
+.panel-action:hover{background:rgba(139,92,246,0.1);color:var(--purple-glow);}
+.panel-body{padding:16px 20px;}
 
-.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
 
-.nav-section {
-  padding: 8px 20px 4px;
-  font-size: 10px;
-  font-family: var(--mono);
-  letter-spacing: 1.5px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
+/* WEEK PROGRESS */
+.week-progress{margin-bottom:20px;padding:16px 20px;background:linear-gradient(135deg,rgba(45,22,85,0.25),var(--bg-card));border:1px solid var(--border-dim);border-radius:14px;}
+.week-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.week-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:1px;color:var(--purple-glow);}
+.week-pct{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--accent-gold);}
+.week-bar-bg{height:8px;background:rgba(255,255,255,0.04);border-radius:10px;overflow:hidden;}
+.week-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple-dark),var(--purple-neon),var(--accent-gold));border-radius:10px;box-shadow:0 0 12px rgba(168,85,247,0.5);}
+.week-days{display:flex;gap:6px;margin-top:10px;}
+.day-pill{flex:1;text-align:center;padding:5px 0;border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text-muted);border:1px solid rgba(255,255,255,0.04);}
+.day-pill.done{background:rgba(139,92,246,0.15);color:var(--purple-glow);border-color:rgba(139,92,246,0.3);}
+.day-pill.today{background:rgba(245,158,11,0.12);color:var(--accent-gold);border-color:rgba(245,158,11,0.3);}
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  cursor: pointer;
-  color: var(--muted2);
-  font-size: 13.5px;
-  font-weight: 500;
-  border-left: 2px solid transparent;
-  transition: all 0.15s;
-  user-select: none;
-}
+/* TASKS */
+.task-item{display:flex;align-items:flex-start;gap:14px;padding:13px 0;border-bottom:1px solid rgba(139,92,246,0.06);transition:all .2s;cursor:pointer;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{padding-left:6px;}
+.task-checkbox{width:20px;height:20px;border-radius:5px;border:2px solid var(--border-glow);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s;}
+.task-checkbox.done{background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));border-color:var(--purple-neon);box-shadow:0 0 8px rgba(168,85,247,0.4);color:#fff;}
+.task-checkbox.done::after{content:'✓';font-size:11px;}
+.task-info{flex:1;}
+.task-name{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:3px;}
+.task-name.done{text-decoration:line-through;color:var(--text-muted);}
+.task-desc{font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:4px;}
+.task-meta{display:flex;gap:10px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:4px;}
+.task-priority{padding:2px 8px;border-radius:20px;font-size:10px;font-family:'Share Tech Mono',monospace;}
+.task-priority.high{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.task-priority.mid{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.25);}
+.task-priority.low{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.25);}
+.task-xp{margin-left:auto;font-family:'Orbitron',monospace;font-size:11px;color:var(--accent-gold);font-weight:700;flex-shrink:0;}
 
-.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(59,127,255,0.07); }
-.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+/* LEADERBOARD */
+.leader-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(139,92,246,0.06);}
+.leader-item:last-child{border-bottom:none;}
+.leader-rank{width:28px;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;text-align:center;flex-shrink:0;}
+.rank-1{color:#fbbf24;text-shadow:0 0 8px #fbbf24;}
+.rank-2{color:#e2e8f0;text-shadow:0 0 6px rgba(226,232,240,0.6);}
+.rank-3{color:#c2734a;}
+.rank-other{color:var(--text-muted);}
+.leader-avatar{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;border:1px solid rgba(139,92,246,0.3);}
+.leader-info{flex:1;}
+.leader-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+.leader-role{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-top:1px;}
+.leader-score{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--purple-glow);}
+.leader-bar-wrap{width:70px;}
+.leader-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;margin-top:3px;}
+.leader-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon));box-shadow:0 0 6px var(--purple-neon);}
+.me-tag{background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);color:var(--purple-glow);font-size:9px;font-family:'Share Tech Mono',monospace;padding:1px 5px;border-radius:4px;margin-left:4px;}
 
-.sidebar-user {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* FAQ */
+.faq-item{border:1px solid var(--border-dim);border-radius:10px;margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.faq-item:hover{border-color:var(--border-glow);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-secondary);transition:color .2s;gap:10px;}
+.faq-q:hover{color:var(--text-primary);}
+.faq-icon{font-size:16px;flex-shrink:0;transition:transform .2s;}
+.faq-type{font-size:9px;font-family:'Share Tech Mono',monospace;padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.faq-type.video{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.faq-type.text{background:rgba(34,211,238,0.08);color:var(--accent-cyan);border:1px solid rgba(34,211,238,0.2);}
+.faq-a{padding:0 16px 14px;font-size:13px;color:var(--text-muted);line-height:1.7;display:none;}
+.faq-a.open{display:block;}
+.faq-video-thumb{margin-top:10px;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:border-color .2s;}
+.faq-video-thumb:hover{border-color:var(--accent-red);}
+.play-btn{width:36px;height:36px;background:rgba(239,68,68,0.8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 12px rgba(239,68,68,0.4);}
+.faq-video-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
 
-.user-avatar {
-  width: 34px; height: 34px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;
-}
+/* SUPPORT */
+.form-group{margin-bottom:12px;}
+.form-label{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:6px;}
+.form-input,.form-textarea,.form-select{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;transition:border-color .2s;appearance:none;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--purple-bright);box-shadow:0 0 0 3px rgba(139,92,246,0.1);}
+.form-textarea{resize:none;height:90px;}
+.form-select option{background:var(--bg-panel);}
 
-.user-info { flex: 1; min-width: 0; }
-.user-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.user-role { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+/* ACHIEVEMENTS */
+.achievements{display:flex;gap:10px;flex-wrap:wrap;}
+.ach-card{background:linear-gradient(135deg,rgba(45,22,85,0.4),rgba(13,8,25,0.8));border:1px solid rgba(139,92,246,0.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex:1;min-width:130px;transition:all .2s;}
+.ach-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);transform:translateY(-1px);}
+.ach-card.locked{opacity:.4;filter:grayscale(.7);}
+.ach-icon{font-size:22px;}
+.ach-title{font-size:12px;font-weight:600;color:var(--text-primary);}
+.ach-sub{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;}
 
-.btn-logout { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; border-radius: 6px; transition: color 0.15s; font-size: 16px; }
-.btn-logout:hover { color: var(--red); }
+/* EMPLOYEE */
+.employee-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(139,92,246,0.06);cursor:pointer;transition:all .2s;}
+.employee-row:last-child{border-bottom:none;}
+.employee-row:hover{padding-left:4px;}
+.emp-avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:1px solid rgba(139,92,246,0.3);flex-shrink:0;}
+.emp-info{flex:1;min-width:0;}
+.emp-name{font-size:13px;font-weight:600;color:var(--text-primary);}
+.emp-role{font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.emp-prog-wrap{width:90px;flex-shrink:0;}
+.emp-prog-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);font-family:'Share Tech Mono',monospace;margin-bottom:4px;}
+.emp-prog-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;}
+.emp-prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--purple-mid),var(--purple-neon));}
+.emp-status{font-size:9px;font-family:'Share Tech Mono',monospace;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+.emp-status.online{background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.3);}
+.emp-status.offline{background:rgba(107,79,138,0.1);color:var(--text-muted);border:1px solid rgba(107,79,138,0.2);}
+.emp-status.warn{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.3);}
 
-/* Main */
-#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+/* DEPT CARD */
+.dept-card{background:var(--bg-card);border:1px solid var(--border-dim);border-radius:12px;padding:18px;margin-bottom:12px;cursor:pointer;transition:all .2s;}
+.dept-card:hover{border-color:var(--border-glow);box-shadow:var(--glow-sm);}
+.dept-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.dept-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--purple-glow);letter-spacing:1px;}
+.dept-head{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
+.dept-count{background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--purple-glow);font-family:'Share Tech Mono',monospace;font-size:10px;padding:3px 10px;border-radius:20px;}
+.dept-roles{display:flex;flex-wrap:wrap;gap:6px;}
+.role-tag{font-size:11px;padding:4px 10px;background:rgba(0,0,0,0.3);border:1px solid var(--border-dim);border-radius:6px;color:var(--text-secondary);}
 
-.topbar {
-  height: 56px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 28px;
-  gap: 16px;
-  background: var(--surface);
-  flex-shrink: 0;
-}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,2,10,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg-panel);border:1px solid var(--border-glow);border-radius:16px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;box-shadow:var(--glow-md);animation:fadeUp .3s ease;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border-dim);}
+.modal-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--purple-glow);letter-spacing:1px;}
+.modal-close{width:32px;height:32px;background:rgba(139,92,246,0.1);border:1px solid var(--border-dim);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:18px;transition:all .2s;}
+.modal-close:hover{border-color:var(--accent-red);color:var(--accent-red);}
+.modal-body{padding:20px 24px;}
+.modal-section{margin-bottom:16px;}
+.modal-section-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--purple-neon);letter-spacing:2px;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-secondary);line-height:1.8;}
+.func-list{list-style:none;padding:0;}
+.func-list li{padding:6px 0;border-bottom:1px solid rgba(139,92,246,0.06);font-size:13px;color:var(--text-secondary);display:flex;gap:8px;align-items:flex-start;}
+.func-list li::before{content:'▸';color:var(--purple-neon);flex-shrink:0;margin-top:1px;}
+.func-list li:last-child{border-bottom:none;}
 
-.topbar-title {
-  font-family: var(--display);
-  font-size: 17px;
-  font-weight: 700;
-  color: #fff;
-  flex: 1;
-}
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--purple-dark),var(--bg-panel));border:1px solid var(--border-glow);border-radius:12px;padding:14px 18px;z-index:2000;display:flex;align-items:center;gap:12px;font-size:13px;box-shadow:var(--glow-md);transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-icon{font-size:20px;}
 
-#content { flex: 1; overflow-y: auto; padding: 28px; }
+/* TICKET */
+.ticket-item{background:rgba(0,0,0,0.2);border:1px solid var(--border-dim);border-radius:10px;padding:14px;margin-bottom:10px;transition:border-color .2s;}
+.ticket-item:hover{border-color:var(--border-glow);}
+.ticket-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ticket-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.ticket-status{font-size:9px;font-family:'Share Tech Mono',monospace;padding:3px 8px;border-radius:20px;}
+.ticket-status.open{background:rgba(245,158,11,0.12);color:var(--accent-gold);border:1px solid rgba(245,158,11,0.3);}
+.ticket-status.closed{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.25);}
+.ticket-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);}
 
-/* ============ LOGIN ============ */
-#login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  position: relative;
-  overflow: hidden;
-}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--purple-dark);border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--purple-mid);}
 
-#login-page::before {
-  content: '';
-  position: absolute;
-  top: -200px; left: 50%; transform: translateX(-50%);
-  width: 700px; height: 400px;
-  background: radial-gradient(ellipse, rgba(59,127,255,0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
+/* ===== AUTH OVERLAY ===== */
+#auth-overlay{position:fixed;inset:0;background:var(--bg-deepest);z-index:9998;display:flex;align-items:center;justify-content:center;}
+#auth-overlay.hidden{display:none;}
+.auth-box{width:100%;max-width:400px;padding:40px;background:var(--bg-panel);border:1px solid var(--border-glow);border-radius:20px;box-shadow:var(--glow-md);}
+.auth-logo{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;letter-spacing:3px;color:var(--purple-glow);text-shadow:var(--glow-sm);margin-bottom:4px;}
+.auth-sub{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent-gold);letter-spacing:2px;margin-bottom:32px;}
+.auth-input{width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border-dim);border-radius:10px;padding:12px 16px;color:var(--text-primary);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:12px;}
+.auth-input:focus{border-color:var(--purple-bright);box-shadow:0 0 0 3px rgba(139,92,246,0.1);}
+.auth-input::placeholder{color:var(--text-muted);}
+.auth-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--purple-mid),var(--purple-neon));color:#fff;border:none;border-radius:10px;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.auth-btn:hover{transform:translateY(-1px);box-shadow:var(--glow-md);}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.auth-error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:12px;display:none;font-family:'Share Tech Mono',monospace;}
+.auth-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:6px;display:block;}
+.auth-note{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);text-align:center;margin-top:16px;letter-spacing:1px;}
 
-.login-box {
-  width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  position: relative;
-  z-index: 1;
-}
+/* LOGOUT BTN */
+.btn-logout-header{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#f87171;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;transition:all .2s;}
+.btn-logout-header:hover{background:rgba(239,68,68,0.18);border-color:rgba(239,68,68,0.5);}
 
-.login-logo {
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 6px;
-}
-
-.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
-
-/* ============ SETUP PAGE ============ */
-#setup-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  padding: 40px 20px;
-}
-
-.setup-box {
-  width: 100%; max-width: 680px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 40px;
-}
-
-.setup-box h1 { font-family: var(--display); font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px; }
-.setup-box p { color: var(--muted2); margin-bottom: 24px; }
-
-.step { margin-bottom: 28px; }
-.step-num {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--accent); color: #fff;
-  font-size: 12px; font-weight: 700; margin-bottom: 10px;
-}
-.step h3 { font-family: var(--display); font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-
-pre {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: #94a3b8;
-  overflow-x: auto;
-  line-height: 1.8;
-  white-space: pre;
-}
-
-/* ============ FORM ELEMENTS ============ */
-.form-group { margin-bottom: 16px; }
-.form-label { display: block; font-size: 12px; font-weight: 500; color: var(--muted2); margin-bottom: 6px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.5px; }
-
-.form-input, .form-select {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: var(--text);
-  font-size: 14px;
-  font-family: var(--font);
-  outline: none;
-  transition: border-color 0.2s;
-  -webkit-appearance: none;
-}
-
-.form-input:focus, .form-select:focus { border-color: var(--accent); }
-.form-input::placeholder { color: var(--muted); }
-.form-select option { background: var(--card); }
-
-/* Buttons */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 10px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
-  cursor: pointer; border: none; transition: all 0.15s; font-family: var(--font);
-  text-decoration: none;
-}
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent2); }
-.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-.btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
-.btn-ghost:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,0.04); }
-.btn-danger { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
-.btn-danger:hover { background: rgba(239,68,68,0.2); }
-.btn-success { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-.btn-full { width: 100%; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ============ CARDS & STATS ============ */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
-
-.stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  transition: border-color 0.2s;
-}
-
-.stat-card:hover { border-color: var(--border2); }
-.stat-label { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.stat-value { font-family: var(--display); font-size: 32px; font-weight: 800; color: #fff; line-height: 1; }
-.stat-sub { font-size: 12px; color: var(--muted2); margin-top: 6px; }
-.stat-icon { font-size: 24px; margin-bottom: 12px; }
-
-/* Table */
-.table-wrap {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.table-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.table-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: #fff; }
-
-.search-input {
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 7px 12px;
-  color: var(--text);
-  font-size: 13px;
-  font-family: var(--font);
-  outline: none;
-  width: 200px;
-  transition: border-color 0.2s;
-}
-.search-input:focus { border-color: var(--accent); }
-.search-input::placeholder { color: var(--muted); }
-
-table { width: 100%; border-collapse: collapse; }
-thead th {
-  padding: 10px 20px;
-  text-align: left;
-  font-size: 11px;
-  font-family: var(--mono);
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(0,0,0,0.2);
-  font-weight: 500;
-}
-tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: rgba(255,255,255,0.02); }
-tbody td { padding: 12px 20px; font-size: 13.5px; }
-
-/* Badges */
-.badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; font-family: var(--mono);
-}
-.badge-blue { background: rgba(59,127,255,0.12); color: #7aaeff; border: 1px solid rgba(59,127,255,0.2); }
-.badge-purple { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.2); }
-.badge-green { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
-.badge-red { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
-.badge-amber { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
-
-/* Avatar row */
-.avatar-row { display: flex; align-items: center; gap: 10px; }
-.av {
-  width: 32px; height: 32px; border-radius: 9px;
-  background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
-}
-.av-name { font-weight: 500; color: var(--text); }
-.av-email { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-
-/* Modal */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000; padding: 20px;
-  animation: fadeIn 0.15s ease;
-}
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 18px;
-  padding: 28px;
-  width: 100%; max-width: 440px;
-  animation: slideUp 0.2s ease;
-}
-.modal h3 { font-family: var(--display); font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 20px; }
-.modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Toast */
-.toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  padding: 12px 18px;
-  font-size: 13px; color: var(--text);
-  z-index: 9999;
-  display: flex; align-items: center; gap: 10px;
-  animation: toastIn 0.3s ease;
-  max-width: 320px;
-}
-.toast.success { border-color: rgba(34,197,94,0.3); }
-.toast.error { border-color: rgba(239,68,68,0.3); }
-@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Profile page */
-.profile-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  max-width: 520px;
-}
-.profile-av {
-  width: 72px; height: 72px; border-radius: 18px;
-  background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 16px;
-}
-.profile-name { font-family: var(--display); font-size: 22px; font-weight: 800; color: #fff; }
-.profile-role { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 4px; margin-bottom: 20px; }
-.profile-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.profile-row:last-child { border-bottom: none; }
-.profile-key { font-size: 12px; color: var(--muted); font-family: var(--mono); width: 100px; flex-shrink: 0; padding-top: 1px; }
-.profile-val { font-size: 14px; color: var(--text); }
-
-/* Alert */
-.alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
-.alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #f87171; }
-.alert-info { background: rgba(59,127,255,0.1); border: 1px solid rgba(59,127,255,0.2); color: #7aaeff; }
-
-/* Dept cards */
-.dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-.dept-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px;
-  transition: border-color 0.2s;
-}
-.dept-card:hover { border-color: var(--border2); }
-.dept-card h3 { font-family: var(--display); font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-.dept-card p { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
-.dept-stat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted2); }
-
-/* Loading */
-.loading { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--muted); gap: 10px; }
-
-/* Scroll */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-/* Responsive */
-@media (max-width: 700px) {
-  #sidebar { display: none; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  #content { padding: 16px; }
-}
-
-/* Empty state */
-.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-.empty-icon { font-size: 40px; margin-bottom: 12px; }
-.empty p { font-size: 14px; }
+/* Role visibility */
+.role-manager,.role-superadmin{display:none;}
 </style>
 </head>
 <body>
+<div class="bg-ambient"></div>
 
-<!-- ============ SETUP PAGE ============ -->
-<div id="setup-page" style="display:none;">
-  <div class="setup-box">
-    <h1>⚙️ Настройка платформы</h1>
-    <p>Выполни эти шаги один раз чтобы запустить платформу</p>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Создай проект на Supabase</h3>
-      <p style="font-size:13px;color:var(--muted2);margin-bottom:10px;">Зайди на <a href="https://supabase.com" target="_blank" style="color:var(--accent)">supabase.com</a> → New Project → запомни URL и anon key</p>
-    </div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>Выполни SQL в Supabase → SQL Editor</h3>
-      <pre id="sql-code">-- 1. Таблица отделов
-create table departments (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  created_at timestamptz default now()
-);
-
--- 2. Профили сотрудников
-create table profiles (
-  id uuid references auth.users primary key,
-  email text,
-  full_name text not null,
-  role text default 'employee' check (role in ('superadmin','manager','employee')),
-  department_id uuid references departments(id),
-  is_active boolean default true,
-  created_at timestamptz default now()
-);
-
--- 3. RLS политики
-alter table profiles enable row level security;
-alter table departments enable row level security;
-
--- Все авторизованные видят профили
-create policy "profiles_select" on profiles for select to authenticated using (true);
-create policy "departments_select" on departments for select to authenticated using (true);
-
--- Обновлять профили могут superadmin и сам пользователь
-create policy "profiles_update" on profiles for update to authenticated
-  using (auth.uid() = id or exists (
-    select 1 from profiles where id = auth.uid() and role = 'superadmin'
-  ));
-
--- Вставлять/удалять только superadmin
-create policy "profiles_insert" on profiles for insert to authenticated
-  with check (exists (
-    select 1 from profiles where id = auth.uid() and role = 'superadmin'
-  ));
-create policy "profiles_delete" on profiles for delete to authenticated
-  using (exists (
-    select 1 from profiles where id = auth.uid() and role = 'superadmin'
-  ));
-
-create policy "departments_all" on departments for all to authenticated
-  using (exists (
-    select 1 from profiles where id = auth.uid() and role in ('superadmin','manager')
-  ));
-
--- 4. Авто-создание профиля при регистрации
-create or replace function handle_new_user()
-returns trigger as $$
-begin
-  insert into profiles (id, email, full_name, role)
-  values (new.id, new.email, coalesce(new.raw_user_meta_data->>'full_name', new.email), 'employee');
-  return new;
-end;
-$$ language plpgsql security definer;
-
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute function handle_new_user();</pre>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="copySQL()">📋 Скопировать SQL</button>
-    </div>
-
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>Введи данные Supabase</h3>
-      <div class="form-group">
-        <label class="form-label">Project URL</label>
-        <input class="form-input" id="setup-url" placeholder="https://xxxxxxxx.supabase.co" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Anon Key</label>
-        <input class="form-input" id="setup-key" placeholder="eyJhbG..." />
-      </div>
-      <button class="btn btn-primary" onclick="saveConfig()">Сохранить и продолжить →</button>
-    </div>
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">MAJESTIC</div>
+    <div class="auth-sub">ЧЕРКИЗОВО · CORP PORTAL · ВХОД В СИСТЕМУ</div>
+    <div class="auth-error" id="auth-error"></div>
+    <label class="auth-label">// EMAIL</label>
+    <input class="auth-input" id="auth-email" type="email" placeholder="your@email.com" />
+    <label class="auth-label">// ПАРОЛЬ</label>
+    <input class="auth-input" id="auth-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="auth-btn" id="auth-btn" onclick="doLogin()">ВОЙТИ В СИСТЕМУ</button>
+    <div class="auth-note">АККАУНТЫ СОЗДАЮТСЯ АДМИНИСТРАТОРОМ</div>
   </div>
 </div>
 
-<!-- ============ LOGIN PAGE ============ -->
-<div id="login-page" style="display:none;">
-  <div class="login-box">
-    <div class="login-logo">Корпоратив</div>
-    <p class="login-sub">Войдите в корпоративный портал</p>
-    <div id="login-error" class="alert alert-error" style="display:none;"></div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input class="form-input" id="login-email" type="email" placeholder="you@company.com" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Пароль</label>
-      <input class="form-input" id="login-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
-    </div>
-    <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">Войти</button>
-    <p style="font-size:12px;color:var(--muted);margin-top:16px;text-align:center;">
-      Аккаунты создаются администратором
-    </p>
-  </div>
-</div>
+<div class="app-wrapper" id="main-app" style="display:none;">
 
-<!-- ============ MAIN APP ============ -->
-<div id="app" style="display:none;">
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <div class="sidebar-logo">
-      <h2>Корпоратив</h2>
-      <p id="sb-role-label">——</p>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo" onclick="showPage('dashboard')">
+    <div class="logo-icon">M</div>
+    <div>
+      <div class="logo-title">MAJESTIC</div>
+      <div class="logo-sub">ЧЕРКИЗОВО · CORP PORTAL</div>
     </div>
-    <nav class="sidebar-nav" id="sidebar-nav"></nav>
-    <div class="sidebar-user">
-      <div class="user-avatar" id="sb-avatar">?</div>
-      <div class="user-info">
-        <div class="user-name" id="sb-name">—</div>
-        <div class="user-role" id="sb-role">—</div>
+  </div>
+  <div class="header-center">
+    <div class="status-dot"></div>
+    СИСТЕМА ОНЛАЙН · НЕДЕЛЯ 17 · 2025
+  </div>
+  <div class="header-right">
+    <div class="header-notif" onclick="showToast('🔔','У вас 3 непрочитанных уведомления')">
+      🔔<div class="notif-badge">3</div>
+    </div>
+    <div class="header-user">
+      <div class="user-avatar" id="hdr-avatar">АД</div>
+      <div>
+        <div class="user-name" id="hdr-name">Загрузка...</div>
+        <div class="user-rank" id="hdr-rank">—</div>
       </div>
-      <button class="btn-logout" onclick="doLogout()" title="Выйти">⏏</button>
+    </div>
+    <button class="btn-logout-header" onclick="doLogout()">⏏ ВЫХОД</button>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-xp">
+    <div class="xp-header">
+      <span class="xp-label">ПРОГРЕСС XP</span>
+      <span class="xp-level">⚡ LVL 8</span>
+    </div>
+    <div class="xp-bar-bg"><div class="xp-bar-fill" style="width:72%"></div></div>
+    <div class="xp-sub">720 / 1000 XP до уровня 9</div>
+  </div>
+
+  <div class="nav-label">// ГЛАВНОЕ</div>
+  <div class="nav-item active" data-page="dashboard"><span class="nav-icon">🏠</span> Дашборд</div>
+  <div class="nav-item" data-page="tasks"><span class="nav-icon">📋</span> Мои задачи <span class="nav-badge red">5</span></div>
+  <div class="nav-item" data-page="leaderboard"><span class="nav-icon">🏆</span> Рейтинг <span class="nav-badge gold">↑2</span></div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label">// ОБУЧЕНИЕ</div>
+  <div class="nav-item" data-page="faq"><span class="nav-icon">❓</span> База знаний <span class="nav-badge">8</span></div>
+  <div class="nav-item" data-page="team"><span class="nav-icon">👥</span> Отделы и роли</div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label">// КОММУНИКАЦИЯ</div>
+  <div class="nav-item" data-page="support"><span class="nav-icon">💬</span> Поддержка <span class="nav-badge red">2</span></div>
+
+  <div class="sidebar-divider"></div>
+  <div class="nav-label role-manager role-superadmin">// РУКОВОДИТЕЛЬ</div>
+  <div class="nav-item role-manager role-superadmin" data-page="manager"><span class="nav-icon">📊</span> Аналитика команды</div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+  <!-- ===== PAGE: DASHBOARD ===== -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ПАНЕЛЬ СОТРУДНИКА</h1>
+        <p>// РАБОЧАЯ НЕДЕЛЯ 17 · ОБНОВЛЕНО 28.04.2025</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" onclick="showPage('leaderboard')">🏆 Рейтинг</button>
+        <button class="btn btn-primary" onclick="showPage('support')">✚ Задать вопрос</button>
+      </div>
+    </div>
+
+    <div class="week-progress">
+      <div class="week-header">
+        <span class="week-title">// ПРОГРЕСС НЕДЕЛИ</span>
+        <span class="week-pct">62%</span>
+      </div>
+      <div class="week-bar-bg"><div class="week-bar-fill" style="width:62%"></div></div>
+      <div class="week-days">
+        <div class="day-pill done">ПН</div>
+        <div class="day-pill done">ВТ</div>
+        <div class="day-pill done">СР</div>
+        <div class="day-pill today">ЧТ</div>
+        <div class="day-pill">ПТ</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-val">8</div>
+        <div class="stat-label">ЗАДАЧ НА НЕДЕЛЕ</div>
+        <div class="stat-delta up">+2 новых</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-val">720</div>
+        <div class="stat-label">ОЧКОВ ОПЫТА</div>
+        <div class="stat-delta up">+140</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-val">#3</div>
+        <div class="stat-label">МЕСТО В РЕЙТИНГЕ</div>
+        <div class="stat-delta up">↑2</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-val">5/8</div>
+        <div class="stat-label">ВЫПОЛНЕНО</div>
+        <div class="stat-delta down">3 осталось</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📋 БЛИЖАЙШИЕ ЗАДАЧИ</div>
+          <span class="panel-action" onclick="showPage('tasks')">ВСЕ ЗАДАЧИ →</span>
+        </div>
+        <div class="panel-body" id="dash-tasks-list"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🏆 ТОП РЕЙТИНГА</div>
+          <span class="panel-action" onclick="showPage('leaderboard')">ПОЛНЫЙ РЕЙТИНГ →</span>
+        </div>
+        <div class="panel-body" id="dash-leader-list"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🎖️ МОИ ДОСТИЖЕНИЯ</div>
+      </div>
+      <div class="panel-body">
+        <div class="achievements">
+          <div class="ach-card"><div class="ach-icon">🔥</div><div><div class="ach-title">Огненный старт</div><div class="ach-sub">5 задач подряд</div></div></div>
+          <div class="ach-card"><div class="ach-icon">⚡</div><div><div class="ach-title">Спринтер</div><div class="ach-sub">Сдача за 24ч до дедлайна</div></div></div>
+          <div class="ach-card"><div class="ach-icon">🛰️</div><div><div class="ach-title">Инженер GIS</div><div class="ach-sub">10 установок телематики</div></div></div>
+          <div class="ach-card locked"><div class="ach-icon">🌟</div><div><div class="ach-title">Легенда</div><div class="ach-sub">ТОП-1 недели</div></div></div>
+          <div class="ach-card locked"><div class="ach-icon">💎</div><div><div class="ach-title">Мастер</div><div class="ach-sub">LVL 10</div></div></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Main -->
-  <div id="main">
-    <div class="topbar">
-      <div class="topbar-title" id="page-title">Загрузка...</div>
+  <!-- ===== PAGE: TASKS ===== -->
+  <div class="page" id="page-tasks">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>МОИ ЗАДАЧИ</h1>
+        <p>// НЕДЕЛЯ 17 · ОТДЕЛ ГЕОИНФОРМАЦИОННЫХ ТЕХНОЛОГИЙ</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" id="filter-all" onclick="filterTasks('all')">Все</button>
+        <button class="btn btn-ghost" id="filter-active" onclick="filterTasks('active')">Активные</button>
+        <button class="btn btn-ghost" id="filter-done" onclick="filterTasks('done')">Выполнено</button>
+      </div>
     </div>
-    <div id="content">
-      <div class="loading">⏳ Загрузка...</div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📋 СПИСОК ЗАДАЧ НА НЕДЕЛЮ</div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);">XP начисляется за выполнение</span>
+      </div>
+      <div class="panel-body" id="full-tasks-list"></div>
     </div>
+  </div>
+
+  <!-- ===== PAGE: LEADERBOARD ===== -->
+  <div class="page" id="page-leaderboard">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>РЕЙТИНГ СОТРУДНИКОВ</h1>
+        <p>// СОРЕВНОВАТЕЛЬНЫЙ РЕЖИМ · НЕДЕЛЯ 17</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🏆 ОБЩИЙ ЗАЧЁТ</div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent-gold);">ПРИЗ НЕДЕЛИ: +500 XP ПОБЕДИТЕЛЮ</span>
+      </div>
+      <div class="panel-body" id="full-leader-list"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: FAQ ===== -->
+  <div class="page" id="page-faq">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>БАЗА ЗНАНИЙ</h1>
+        <p>// ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ · ТЕКСТ И ВИДЕО</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🛰️ ГЕОИНФОРМАЦИОННЫЕ ТЕХНОЛОГИИ</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как правильно установить телематическое оборудование?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Перед установкой убедитесь в наличии оборудования на вверенном складе. Проведите диагностику устройства, зафиксируйте серийный номер в отчётности. Подключение выполняется по схеме из регламента ГИСИТ. После установки — тест сигнала GPS и передача данных в ПО мониторинга.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">ИНСТРУКЦИЯ ПО УСТАНОВКЕ · 6:20</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как вести отчётность по вверенному складу?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Ежедневно фиксируйте приход/расход оборудования. Остатки сверяйте с данными в 1С. Отчёт подаётся руководителю каждую пятницу до 17:00 в установленном формате Excel. При расхождении — немедленно уведомите ведущего технического специалиста.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как обработать заявку по навигации в зоне ответственности?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Заявки поступают через Яндекс.Трекер. Примите заявку, присвойте статус «В работе». Выезд на объект — в течение 24 часов. По итогу — акт приёмки, который согласовывает ведущий технический специалист. Закройте заявку в трекере с комментарием.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🚛 АВТОМАТИЗАЦИЯ ТРАНСПОРТНОЙ ЛОГИСТИКИ</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как работать с расхождениями пробегов и топлива?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Открываете отчёт «Расхождение пробегов» в ПО мониторинга. Сверяете с данными путевых листов в 1С АСУ АТП. Расхождение свыше 5% — фиксируется как инцидент. Сим-карты проверяются в ЛК поставщика связи, при необходимости — активация через ЭДО.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">РАБОТА С ОТЧЁТАМИ АТП · 8:45</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как поддерживать пользователей системы 1С АСУ АТП?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Консультации пользователей проводятся по запросу через почтовый ящик АТЛ. Права доступа корректируются через администраторский раздел 1С. CR (запросы на доработку) формируются по шаблону и согласовываются с руководителем. Все обращения фиксируются в Яндекс.Трекере.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как моделировать бизнес-процессы AS IS / TO BE?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Используются нотации BPMN, UML, EPC или IDEF0 — выбор зависит от сложности процесса. AS IS — текущее состояние, TO BE — целевое. Схемы согласовываются с заказчиком, затем передаются разработчикам в виде функциональных требований. Итоговые материалы оформляются в PowerPoint для руководства.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">НОТАЦИИ BPMN/UML · 12:30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР</div>
+      </div>
+      <div class="panel-body">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как реагировать на тревожные события при транспортировке?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type video">ВИДЕО</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            При получении тревожного сигнала в системе мониторинга — немедленно уточните ситуацию у водителя по телефону. Зафиксируйте событие в журнале инцидентов. При нештатной ситуации уведомите смежные службы и старшего специалиста. Все данные по маршруту доступны в системе видеомониторинга.
+            <div class="faq-video-thumb" onclick="showToast('🎬','Видео открывается в учебном разделе')"><div class="play-btn">▶</div><span class="faq-video-label">АЛГОРИТМ РЕАГИРОВАНИЯ · 5:10</span></div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Как формировать отчётность в ЕСЦ?</span>
+            <div style="display:flex;align-items:center;gap:8px"><span class="faq-type text">ТЕКСТ</span><span class="faq-icon">▼</span></div>
+          </div>
+          <div class="faq-a">
+            Статичные отчёты формируются ежесуточно по установленным шаблонам. Отчёты по запросу — в течение 2 часов с момента поступления запроса. Данные берутся из систем мониторинга, АСК ТТ и 1С. Анализ нарушений — еженедельно, итоги передаются консультанту ЕСЦ.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: SUPPORT ===== -->
+  <div class="page" id="page-support">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ПОДДЕРЖКА</h1>
+        <p>// ЗАДАЙТЕ ВОПРОС · ПОЛУЧИТЕ ОТВЕТ</p>
+      </div>
+    </div>
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">✉️ НОВЫЙ ЗАПРОС</div></div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label class="form-label">// ВАШ ОТДЕЛ</label>
+              <select class="form-select" id="sup-dept">
+                <option>Отдел геоинформационных технологий</option>
+                <option>Отдел автоматизации транспортной логистики</option>
+                <option>Единый ситуационный центр</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ТЕМА ОБРАЩЕНИЯ</label>
+              <select class="form-select" id="sup-topic">
+                <option>Вопрос по задаче</option>
+                <option>Технический вопрос (оборудование)</option>
+                <option>Вопрос по системе 1С/АСУ АТП</option>
+                <option>Вопрос по мониторингу транспорта</option>
+                <option>Вопрос по отчётности</option>
+                <option>Вопрос по XP/рейтингу</option>
+                <option>Прочее</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ОПИСАНИЕ</label>
+              <textarea class="form-textarea" id="sup-text" placeholder="Опишите вопрос подробно..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">// ПРИОРИТЕТ</label>
+              <select class="form-select" id="sup-priority">
+                <option>Обычный</option>
+                <option>Срочный</option>
+                <option>Критический</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitTicket()">📨 Отправить запрос</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">📂 МОИ ТИКЕТЫ</div></div>
+          <div class="panel-body" id="tickets-list">
+            <div class="ticket-item">
+              <div class="ticket-header">
+                <span class="ticket-title">Расхождение пробега в отчёте</span>
+                <span class="ticket-status closed">ЗАКРЫТ</span>
+              </div>
+              <div class="ticket-meta">24.04.2025 · Технический вопрос · Ответил: Дутов А.Н.</div>
+            </div>
+            <div class="ticket-item">
+              <div class="ticket-header">
+                <span class="ticket-title">Не активируется SIM-карта в ЛК</span>
+                <span class="ticket-status open">В ОБРАБОТКЕ</span>
+              </div>
+              <div class="ticket-meta">26.04.2025 · 1С/АСУ АТП · Ожидание ответа</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">💡 БЫСТРЫЕ ОТВЕТЫ</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="dept-card" style="padding:12px" onclick="showPage('faq')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📖 База знаний</div>
+                <div style="font-size:11px;color:var(--text-muted);">Ответы на типовые вопросы</div>
+              </div>
+              <div class="dept-card" style="padding:12px" onclick="showToast('📞','Горячая линия: +7 (495) 785-15-00')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📞 Горячая линия</div>
+                <div style="font-size:11px;color:var(--text-muted);">Срочные вопросы: +7 (495) 785-15-00</div>
+              </div>
+              <div class="dept-card" style="padding:12px" onclick="showToast('📧','Почта поддержки: atl@cherkizovo.com')">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">📧 Почта АТЛ</div>
+                <div style="font-size:11px;color:var(--text-muted);">atl@cherkizovo.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: TEAM ===== -->
+  <div class="page" id="page-team">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>ОТДЕЛЫ И РОЛИ</h1>
+        <p>// СТРУКТУРА ПОДРАЗДЕЛЕНИЙ · НАЖМИТЕ НА ОТДЕЛ ДЛЯ ДЕТАЛЕЙ</p>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('gis')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">🛰️ ОТДЕЛ ГЕОИНФОРМАЦИОННЫХ ТЕХНОЛОГИЙ</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Дутов А.Н.</div>
+        </div>
+        <div class="dept-count">11 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Инженер по ГИТ</span>
+        <span class="role-tag">Ведущий инженер по ГИТ</span>
+        <span class="role-tag">Ведущий технический специалист</span>
+        <span class="role-tag">Специалист по автоматизации ТЛ</span>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('atl')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">🚛 ОТДЕЛ АВТОМАТИЗАЦИИ ТРАНСПОРТНОЙ ЛОГИСТИКИ</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Лялякина Л.Г.</div>
+        </div>
+        <div class="dept-count">5 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Консультант по автоматизации ТЛ</span>
+        <span class="role-tag">Ведущий консультант по автоматизации ТЛ</span>
+      </div>
+    </div>
+
+    <div class="dept-card" onclick="openDeptModal('esc')">
+      <div class="dept-card-header">
+        <div>
+          <div class="dept-name">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР</div>
+          <div class="dept-head" style="margin-top:4px">Руководитель: Куркина И.П.</div>
+        </div>
+        <div class="dept-count">15 сотрудников</div>
+      </div>
+      <div class="dept-roles">
+        <span class="role-tag">Консультант ЕСЦ</span>
+        <span class="role-tag">Старший специалист</span>
+        <span class="role-tag">Специалист по мониторингу</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: MANAGER ===== -->
+  <div class="page" id="page-manager">
+    <div class="page-title">
+      <div class="page-title-text">
+        <h1>АНАЛИТИКА КОМАНДЫ</h1>
+        <p>// ВИД РУКОВОДИТЕЛЯ · ПРОГРЕСС СОТРУДНИКОВ</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost" onclick="showToast('📊','Экспорт отчёта сформирован')">📊 Экспорт</button>
+        <button class="btn btn-primary" onclick="showToast('➕','Функция назначения задач открыта')">➕ Назначить задачу</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-val">31</div>
+        <div class="stat-label">СОТРУДНИКОВ</div>
+        <div class="stat-delta up">3 отдела</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-val">24</div>
+        <div class="stat-label">ОНЛАЙН СЕЙЧАС</div>
+        <div class="stat-delta up">77%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-val">4</div>
+        <div class="stat-label">ЗАДЕРЖКА ЗАДАЧ</div>
+        <div class="stat-delta down">требует внимания</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-val">71%</div>
+        <div class="stat-label">СРЕДНИЙ ПРОГРЕСС</div>
+        <div class="stat-delta up">+8%</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🛰️ ОТДЕЛ ГИСИТ — ДУТОВ А.Н.</div>
+        <span class="panel-action" onclick="openDeptModal('gis')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-gis"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🚛 ОТДЕЛ АТЛ — ЛЯЛЯКИНА Л.Г.</div>
+        <span class="panel-action" onclick="openDeptModal('atl')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-atl"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📡 ЕДИНЫЙ СИТУАЦИОННЫЙ ЦЕНТР — КУРКИНА И.П.</div>
+        <span class="panel-action" onclick="openDeptModal('esc')">ДЕТАЛИ →</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 30px" id="manager-esc"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
-<!-- Toast container -->
-<div id="toast-container"></div>
-
-<!-- Modal container -->
-<div id="modal-container"></div>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toast-icon"></div>
+  <div id="toast-text"></div>
+</div>
 
 <script>
-// ============ CONFIG ============
-const SUPABASE_URL_KEY = 'corp_sb_url';
-const SUPABASE_KEY_KEY = 'corp_sb_key';
+// ============ SUPABASE CONFIG ============
+const SB_URL = 'https://htzwseamvwiuhzvavven.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0endzZWFtdndpdWh6dmF2dmVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczOTM5OTQsImV4cCI6MjA5Mjk2OTk5NH0.oN0pPUkeAvHb_XZQgKLFVeIdFT4Bmfu3Ci2qeL6rrnI';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-let sb = null;
-let currentUser = null;
 let currentProfile = null;
-let allDepts = [];
 
-// ============ INIT ============
-async function init() {
-  const url = localStorage.getItem(SUPABASE_URL_KEY);
-  const key = localStorage.getItem(SUPABASE_KEY_KEY);
-
-  if (!url || !key) {
-    show('setup-page');
-    return;
-  }
-
-  try {
-    sb = window.supabase.createClient(url, key);
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) {
-      await loadUser(session.user);
-    } else {
-      show('login-page');
-    }
-  } catch(e) {
-    show('setup-page');
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    await loadProfile(session.user);
+  } else {
+    showAuthOverlay(true);
   }
 }
 
-function show(pageId) {
-  ['setup-page','login-page','app'].forEach(id => {
-    document.getElementById(id).style.display = id === pageId ? (id === 'app' ? 'flex' : 'flex') : 'none';
-  });
+async function loadProfile(user) {
+  const { data: profile } = await sb.from('profiles').select('*, departments(name)').eq('id', user.id).single();
+  if (!profile) { showAuthOverlay(true); return; }
+  currentProfile = profile;
+  applyRole(profile);
+  showAuthOverlay(false);
 }
 
-// ============ SETUP ============
-function copySQL() {
-  navigator.clipboard.writeText(document.getElementById('sql-code').textContent);
-  toast('SQL скопирован!', 'success');
+function applyRole(profile) {
+  const role = profile.role;
+  const name = profile.full_name || profile.email || '—';
+  const ini = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const dept = profile.departments?.name || '';
+  const roleLabel = {superadmin:'ГЛАВНЫЙ РУКОВОДИТЕЛЬ', manager:'РУКОВОДИТЕЛЬ ОТДЕЛА', employee:'СОТРУДНИК'}[role] || role.toUpperCase();
+
+  document.getElementById('hdr-avatar').textContent = ini;
+  document.getElementById('hdr-name').textContent = name;
+  document.getElementById('hdr-rank').textContent = `${roleLabel}${dept ? ' · ' + dept : ''}`;
+
+  // Show role-specific elements
+  if (role === 'manager' || role === 'superadmin') {
+    document.querySelectorAll('.role-manager').forEach(el => el.style.display = '');
+  }
+  if (role === 'superadmin') {
+    document.querySelectorAll('.role-superadmin').forEach(el => el.style.display = '');
+  }
 }
 
-function saveConfig() {
-  const url = document.getElementById('setup-url').value.trim();
-  const key = document.getElementById('setup-key').value.trim();
-  if (!url || !key) { toast('Заполни оба поля', 'error'); return; }
-  localStorage.setItem(SUPABASE_URL_KEY, url);
-  localStorage.setItem(SUPABASE_KEY_KEY, key);
-  init();
+function showAuthOverlay(show) {
+  document.getElementById('auth-overlay').classList.toggle('hidden', !show);
+  document.getElementById('main-app').style.display = show ? 'none' : 'grid';
 }
 
-// ============ AUTH ============
 async function doLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-password').value;
-  const btn = document.getElementById('login-btn');
-  const err = document.getElementById('login-error');
-  if (!email || !pass) { showErr(err, 'Заполни все поля'); return; }
-  btn.disabled = true; btn.textContent = 'Вход...';
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('auth-btn');
+  const err = document.getElementById('auth-error');
+  if (!email || !pass) { showAuthErr('Заполни все поля'); return; }
+  btn.disabled = true; btn.textContent = 'ПОДКЛЮЧЕНИЕ...';
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  btn.disabled = false; btn.textContent = 'Войти';
-  if (error) { showErr(err, 'Неверный email или пароль'); return; }
+  btn.disabled = false; btn.textContent = 'ВОЙТИ В СИСТЕМУ';
+  if (error) { showAuthErr('НЕВЕРНЫЙ EMAIL ИЛИ ПАРОЛЬ'); return; }
   err.style.display = 'none';
-  await loadUser(data.user);
+  await loadProfile(data.user);
+}
+
+function showAuthErr(msg) {
+  const err = document.getElementById('auth-error');
+  err.textContent = '⚠ ' + msg;
+  err.style.display = 'block';
 }
 
 async function doLogout() {
   await sb.auth.signOut();
-  currentUser = null; currentProfile = null;
-  show('login-page');
+  currentProfile = null;
+  showAuthOverlay(true);
 }
 
-function showErr(el, msg) {
-  el.textContent = msg;
-  el.style.display = 'block';
-}
+initAuth();
+</script>
 
-async function loadUser(user) {
-  currentUser = user;
-  const { data: profile } = await sb.from('profiles').select('*, departments(name)').eq('id', user.id).single();
-  if (!profile) { toast('Профиль не найден', 'error'); show('login-page'); return; }
-  currentProfile = profile;
-  const { data: depts } = await sb.from('departments').select('*').order('name');
-  allDepts = depts || [];
-  setupSidebar();
-  show('app');
-  navigate('dashboard');
-}
+<script>
+// ============ DATA ============
+const tasks = [
+  {id:1,name:'Установка телематического оборудования (объект А-14)',desc:'Установить и провести диагностику 3 единиц оборудования на объекте А-14. Зафиксировать серийные номера в складском учёте.',priority:'high',xp:150,day:'ПН',done:true},
+  {id:2,name:'Ведение отчётности по складу (апрель)',desc:'Подготовить ежемесячный отчёт по движению оборудования на вверенном складе. Сверить остатки с 1С.',priority:'mid',xp:80,day:'ВТ',done:true},
+  {id:3,name:'Диагностика неисправного блока GPS #112',desc:'Провести диагностику неисправного навигационного блока. Составить акт и передать на ремонт или списание.',priority:'high',xp:120,day:'ВТ',done:true},
+  {id:4,name:'Обработка заявок по навигации (зона ответственности)',desc:'Обработать все входящие заявки из Яндекс.Трекера по своей зоне ответственности. Закрыть не менее 5 заявок.',priority:'mid',xp:90,day:'СР',done:true},
+  {id:5,name:'Тестирование новинок телематики — демо-образец',desc:'Провести тестирование нового образца телематики от поставщика. Подготовить краткое заключение для руководителя.',priority:'mid',xp:100,day:'СР',done:true},
+  {id:6,name:'Приёмка выполненных работ инженеров ГИСИТ',desc:'Проверить акты выполненных работ от инженеров по своей зоне. Подписать и передать на согласование.',priority:'high',xp:130,day:'ЧТ',done:false},
+  {id:7,name:'Работа с отчётом расхождения топлива (неделя 17)',desc:'Проверить данные по расходу топлива в ПО мониторинга. При расхождениях свыше 5% — зафиксировать инциденты.',priority:'mid',xp:70,day:'ЧТ',done:false},
+  {id:8,name:'Пройти тест по новым регламентам ГИСИТ',desc:'Изучить обновлённый регламент отдела и пройти тест на платформе. Минимальный порог: 80% правильных ответов.',priority:'high',xp:200,day:'ПТ',done:false},
+];
 
-// ============ SIDEBAR ============
-const MENUS = {
-  superadmin: [
-    { id: 'dashboard', icon: '⬡', label: 'Обзор' },
-    { id: 'employees', icon: '👥', label: 'Сотрудники' },
-    { id: 'departments', icon: '🏢', label: 'Отделы' },
-    { id: 'add-user', icon: '➕', label: 'Добавить сотрудника' },
-    { id: 'profile', icon: '👤', label: 'Мой профиль' },
+const employees = {
+  gis: [
+    {name:'Сотрудник ГИСИТ 1',role:'Ведущий технический специалист',prog:88,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Сотрудник ГИСИТ 2',role:'Ведущий инженер по ГИТ',prog:75,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Сотрудник ГИСИТ 3',role:'Инженер по ГИТ',prog:62,status:'online',color:'#2d1655,#8b5cf6'},
+    {name:'Сотрудник ГИСИТ 4',role:'Инженер по ГИТ',prog:55,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Специалист ATЛ-ГИСИТ 1',role:'Специалист по авт. ТЛ',prog:70,status:'online',color:'#14532d,#10b981'},
+    {name:'Специалист АТЛ-ГИСИТ 2',role:'Специалист по авт. ТЛ',prog:48,status:'offline',color:'#374151,#9ca3af'},
   ],
-  manager: [
-    { id: 'dashboard', icon: '⬡', label: 'Обзор' },
-    { id: 'employees', icon: '👥', label: 'Мой отдел' },
-    { id: 'profile', icon: '👤', label: 'Мой профиль' },
+  atl: [
+    {name:'Лялякина Л.Г.',role:'Руководитель отдела АТЛ',prog:95,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Консультант АТЛ 1',role:'Ведущий консультант АТЛ',prog:82,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Консультант АТЛ 2',role:'Консультант по авт. ТЛ',prog:74,status:'online',color:'#14532d,#10b981'},
+    {name:'Консультант АТЛ 3',role:'Консультант по авт. ТЛ',prog:61,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Консультант АТЛ 4',role:'Консультант по авт. ТЛ',prog:45,status:'offline',color:'#374151,#9ca3af'},
   ],
-  employee: [
-    { id: 'profile', icon: '👤', label: 'Мой профиль' },
-  ],
+  esc: [
+    {name:'Куркина И.П.',role:'Консультант ЕСЦ / Руководитель',prog:92,status:'online',color:'#78350f,#f59e0b'},
+    {name:'Старший специалист 1',role:'Старший специалист ЕСЦ',prog:85,status:'online',color:'#2d1655,#8b5cf6'},
+    {name:'Старший специалист 2',role:'Старший специалист ЕСЦ',prog:79,status:'online',color:'#1e3a5f,#3b82f6'},
+    {name:'Специалист мониторинга 1',role:'Специалист по мониторингу',prog:67,status:'online',color:'#14532d,#10b981'},
+    {name:'Специалист мониторинга 2',role:'Специалист по мониторингу',prog:63,status:'online',color:'#374151,#9ca3af'},
+    {name:'Специалист мониторинга 3',role:'Специалист по мониторингу',prog:58,status:'warn',color:'#7c2d12,#ea580c'},
+    {name:'Специалист мониторинга 4',role:'Специалист по мониторингу',prog:55,status:'online',color:'#1e3a5f,#60a5fa'},
+    {name:'Специалист мониторинга 5',role:'Специалист по мониторингу',prog:40,status:'offline',color:'#374151,#6b7280'},
+  ]
 };
 
-function setupSidebar() {
-  const role = currentProfile.role;
-  const initials = (currentProfile.full_name || '?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('sb-avatar').textContent = initials;
-  document.getElementById('sb-name').textContent = currentProfile.full_name;
-  document.getElementById('sb-role').textContent = roleLabel(role);
-  document.getElementById('sb-role-label').textContent = roleLabel(role);
+const deptInfo = {
+  gis: {
+    title:'🛰️ Отдел геоинформационных технологий',
+    head:'Руководитель: Дутов А.Н.',
+    roles:[
+      {name:'Инженер по геоинформационным технологиям',funcs:['Установка и диагностика телематического оборудования','Ведение отчётности по вверенному складу']},
+      {name:'Ведущий инженер по геоинформационным технологиям',funcs:['Установка и диагностика телематического оборудования','Ведение отчётности по вверенному складу','Координация работ инженеров']},
+      {name:'Ведущий технический специалист',funcs:['Приёмка выполненных работ инженеров ГИСИТ','Обработка заявок по навигации в своей зоне ответственности','Тестирование новинок рынка телематики']},
+      {name:'Специалист по автоматизации транспортной логистики',funcs:['Работа с отчётами: расхождение пробегов, расхождение топлива, оснащённости, исправности','Работа в ЛК поставщика связи, активация SIM-карт','Работа в ПО мониторинга транспорта','Работа с документами поставщиков в 1С, ЭДО, OpenText']},
+    ]
+  },
+  atl: {
+    title:'🚛 Отдел автоматизации транспортной логистики',
+    head:'Руководитель: Лялякина Л.Г.',
+    roles:[
+      {name:'Консультант по автоматизации транспортной логистики',funcs:['Поддержка пользователей системы 1С АСУ АТП: консультирование, контроль прав доступа, обучение','Анализ работы системы через отчёты (расход топлива, контроль пробегов, непроверенные путевые листы)','Подготовка реестров выполненных заявок и задач','Ведение учёта в Яндекс.Трекере','Контроль работы почтового ящика АТЛ','Работа в смежных системах (УПП, ERP, OpenText)','Участие в проектах по развитию автоматизации','Формирование протоколов встреч','Сбор и обработка данных, консолидация массивов из различных источников','Моделирование процессов AS IS / TO BE (BPMN, UML, EPC, IDEF0)','Анализ «узких мест» и поиск зон для оптимизации','Формирование функциональных требований для разработчиков','Анализ рынка специализированного ПО','Оценка экономической целесообразности внедрения ИС','Тестирование и внедрение новых решений, обучение ключевых пользователей','Подготовка презентаций и аналитических материалов для руководства']},
+      {name:'Ведущий консультант по автоматизации транспортной логистики',funcs:['Мониторинг и анализ показателей эффективности пользователей в ИС','Оценка коммерческих результатов, факторный анализ выручки','Моделирование процессов AS IS / TO BE','Разработка методологии, регламентов, инструкций, положений','Формирование и согласование бизнес-требований','Участие в тестировании и внедрении новых решений','Взаимодействие с подрядчиками: работа с системой инцидентов','Подготовка аналитических материалов и презентаций для стейкхолдеров','Консультирование руководителей в рамках проектов и запросов']},
+    ]
+  },
+  esc: {
+    title:'📡 Единый ситуационный центр',
+    head:'Руководитель: Куркина И.П.',
+    roles:[
+      {name:'Консультант ЕСЦ',funcs:['Выстраивание, корректировка и оптимизация бизнес-процессов подразделения','Разработка и актуализация нормативно-справочной документации и инструкций','Управление проектами подразделения','Мониторинг выполнения задач, соблюдение сроков','Разработка, ведение и корректировка отчётности','Наставничество действующих и новых сотрудников','Выстраивание коммуникации со смежными службами','Деловая переписка','Самостоятельное изучение новых материалов','Выполнение поручений руководителей']},
+      {name:'Старший специалист',funcs:['Знание и использование системы мониторинга, видеомониторинга, АСК ТТ, 1С','Координация рабочих процессов специалистов по мониторингу','Проведение обучения специалистов по мониторингу','Обработка запросов смежных служб и подразделений','Формирование статичных отчётностей подразделения','Проведение анализа данных','Участие в проектах подразделения']},
+      {name:'Специалист по мониторингу',funcs:['Знание Регламента и НСИ подразделения и смежных служб','Использование инструментов мониторинга и систем 1С','Оперативное реагирование на тревожные события и нештатные ситуации при транспортировке груза','Отслеживание состояния навигационного оборудования','Анализ данных по нарушениям, транспортировкам груза и движению транспорта','Формирование отчётности','Ведение коммуникации со смежными службами и подразделениями']},
+    ]
+  }
+};
 
-  const nav = document.getElementById('sidebar-nav');
-  nav.innerHTML = '';
-  const items = MENUS[role] || MENUS.employee;
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'nav-item';
-    el.id = 'nav-' + item.id;
-    el.innerHTML = `<span class="icon">${item.icon}</span> ${item.label}`;
-    el.onclick = () => navigate(item.id);
-    nav.appendChild(el);
+// Build leaderboard from all employees
+const allEmps = [
+  {name:'Специалист мониторинга 1',dept:'ЕСЦ',xp:1240,color:'#78350f,#f59e0b'},
+  {name:'Лялякина Л.Г.',dept:'АТЛ',xp:1180,color:'#14532d,#10b981'},
+  {name:'Дутов А.Н.',dept:'ГИСИТ',xp:720,color:'#2d1655,#8b5cf6',me:true},
+  {name:'Куркина И.П.',dept:'ЕСЦ',xp:690,color:'#1e3a5f,#3b82f6'},
+  {name:'Ведущий консультант АТЛ',dept:'АТЛ',xp:660,color:'#7c2d12,#ea580c'},
+  {name:'Старший специалист 1',dept:'ЕСЦ',xp:610,color:'#374151,#9ca3af'},
+  {name:'Специалист ATЛ-ГИСИТ 1',dept:'ГИСИТ',xp:580,color:'#1e3a5f,#60a5fa'},
+  {name:'Консультант АТЛ 2',dept:'АТЛ',xp:540,color:'#78350f,#ca8a04'},
+];
+
+// ============ RENDER ============
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+function renderTaskItem(t, compact=false){
+  return `<div class="task-item" onclick="toggleTask(${t.id})">
+    <div class="task-checkbox ${t.done?'done':''}"></div>
+    <div class="task-info">
+      <div class="task-name ${t.done?'done':''}">${t.name}</div>
+      ${!compact?`<div class="task-desc">${t.desc}</div>`:''}
+      <div class="task-meta"><span>📅 ${t.day}</span><span class="task-priority ${t.priority}">${t.priority==='high'?'ВЫСОКИЙ':t.priority==='mid'?'СРЕДНИЙ':'НИЗКИЙ'}</span></div>
+    </div>
+    <div class="task-xp">+${t.xp} XP</div>
+  </div>`;
+}
+
+function renderLeaderItem(emp, rank){
+  const colors = ['rank-1','rank-2','rank-3'];
+  const rankClass = rank<=3?colors[rank-1]:'rank-other';
+  const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+  const maxXp = allEmps[0].xp;
+  const pct = Math.round(emp.xp/maxXp*100);
+  return `<div class="leader-item">
+    <div class="leader-rank ${rankClass}">${typeof medal==='number'?medal:medal}</div>
+    <div class="leader-avatar" style="background:linear-gradient(135deg,#${emp.color.split(',')[0].replace('#','')},#${emp.color.split(',')[1].replace('#','')}">${initials(emp.name)}</div>
+    <div class="leader-info">
+      <div class="leader-name">${emp.name}${emp.me?'<span class="me-tag">ВЫ</span>':''}</div>
+      <div class="leader-role">${emp.dept}</div>
+    </div>
+    <div class="leader-bar-wrap">
+      <div class="leader-bar"><div class="leader-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="leader-score" ${emp.me?'style="color:var(--purple-glow)"':''}>${emp.xp}</div>
+  </div>`;
+}
+
+function renderEmpRow(e){
+  const ini = initials(e.name);
+  const colors = e.color.split(',');
+  return `<div class="employee-row">
+    <div class="emp-avatar" style="background:linear-gradient(135deg,${colors[0]},${colors[1]})">${ini}</div>
+    <div class="emp-info">
+      <div class="emp-name">${e.name}</div>
+      <div class="emp-role">${e.role.toUpperCase()}</div>
+    </div>
+    <div class="emp-prog-wrap">
+      <div class="emp-prog-label"><span>ПРОГРЕСС</span><span>${e.prog}%</span></div>
+      <div class="emp-prog-bar"><div class="emp-prog-fill" style="width:${e.prog}%"></div></div>
+    </div>
+    <div class="emp-status ${e.status}">${e.status==='online'?'ОНЛАЙН':e.status==='offline'?'ОФФЛАЙН':'ЗАДЕРЖКА'}</div>
+  </div>`;
+}
+
+function buildAll(){
+  // Dash tasks (first 5)
+  const dt = tasks.slice(0,5).map(t=>renderTaskItem(t,true)).join('');
+  document.getElementById('dash-tasks-list').innerHTML = dt;
+
+  // Dash leaders (top 5)
+  const dl = allEmps.slice(0,5).map((e,i)=>renderLeaderItem(e,i+1)).join('');
+  document.getElementById('dash-leader-list').innerHTML = dl;
+
+  // Full tasks
+  document.getElementById('full-tasks-list').innerHTML = tasks.map(t=>renderTaskItem(t)).join('');
+
+  // Full leaderboard
+  document.getElementById('full-leader-list').innerHTML = allEmps.map((e,i)=>renderLeaderItem(e,i+1)).join('');
+
+  // Manager panels
+  ['gis','atl','esc'].forEach(k=>{
+    document.getElementById('manager-'+k).innerHTML = employees[k].map(renderEmpRow).join('');
   });
 }
+buildAll();
 
-function setActiveNav(id) {
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const el = document.getElementById('nav-' + id);
-  if (el) el.classList.add('active');
+// ============ NAVIGATION ============
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-page="${name}"]`);
+  if(nav) nav.classList.add('active');
+  document.querySelector('.main-content').scrollTop=0;
 }
 
-// ============ ROUTER ============
-async function navigate(page) {
-  setActiveNav(page);
-  const titles = { dashboard: 'Обзор', employees: 'Сотрудники', departments: 'Отделы', 'add-user': 'Добавить сотрудника', profile: 'Мой профиль' };
-  document.getElementById('page-title').textContent = titles[page] || page;
-  document.getElementById('content').innerHTML = '<div class="loading">⏳ Загрузка...</div>';
+document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+  item.addEventListener('click',function(){showPage(this.dataset.page);});
+});
 
-  switch(page) {
-    case 'dashboard': return renderDashboard();
-    case 'employees': return renderEmployees();
-    case 'departments': return renderDepartments();
-    case 'add-user': return renderAddUser();
-    case 'profile': return renderProfile();
-  }
+// ============ TASKS ============
+function toggleTask(id){
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  t.done = !t.done;
+  buildAll();
+  if(t.done) showToast('⚡',`+${t.xp} XP! Задача выполнена`);
 }
 
-// ============ DASHBOARD ============
-async function renderDashboard() {
-  const role = currentProfile.role;
-  let query = sb.from('profiles').select('*');
-  if (role === 'manager') query = query.eq('department_id', currentProfile.department_id);
-  const { data: emps } = await query;
-  const total = emps?.length || 0;
-  const active = emps?.filter(e => e.is_active).length || 0;
-  const inactive = total - active;
-
-  let statsHtml = `
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-label">Сотрудников</div>
-        <div class="stat-value">${total}</div>
-        <div class="stat-sub">${role === 'manager' ? 'в вашем отделе' : 'всего в компании'}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">✅</div>
-        <div class="stat-label">Активных</div>
-        <div class="stat-value" style="color:var(--green)">${active}</div>
-        <div class="stat-sub">работают сейчас</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⏸</div>
-        <div class="stat-label">Неактивных</div>
-        <div class="stat-value" style="color:var(--muted)">${inactive}</div>
-        <div class="stat-sub">отключены</div>
-      </div>`;
-
-  if (role === 'superadmin') {
-    statsHtml += `
-      <div class="stat-card">
-        <div class="stat-icon">🏢</div>
-        <div class="stat-label">Отделов</div>
-        <div class="stat-value">${allDepts.length}</div>
-        <div class="stat-sub">в структуре</div>
-      </div>`;
-  }
-
-  statsHtml += `</div>`;
-
-  // Recent employees table
-  const recent = (emps || []).slice(-5).reverse();
-  let tableHtml = `
-    <div class="table-wrap">
-      <div class="table-header">
-        <div class="table-title">Последние сотрудники</div>
-      </div>
-      <table>
-        <thead><tr>
-          <th>Сотрудник</th>
-          <th>Роль</th>
-          <th>Статус</th>
-        </tr></thead>
-        <tbody>`;
-
-  if (recent.length === 0) {
-    tableHtml += `<tr><td colspan="3" style="text-align:center;padding:40px;color:var(--muted)">Нет данных</td></tr>`;
-  } else {
-    recent.forEach(emp => {
-      tableHtml += `<tr>
-        <td><div class="avatar-row">
-          <div class="av">${initials(emp.full_name)}</div>
-          <div><div class="av-name">${esc(emp.full_name)}</div><div class="av-email">${esc(emp.email||'')}</div></div>
-        </div></td>
-        <td>${roleBadge(emp.role)}</td>
-        <td>${statusBadge(emp.is_active)}</td>
-      </tr>`;
-    });
-  }
-
-  tableHtml += `</tbody></table></div>`;
-  document.getElementById('content').innerHTML = statsHtml + tableHtml;
+let taskFilter = 'all';
+function filterTasks(f){
+  taskFilter = f;
+  document.querySelectorAll('#page-tasks .btn-ghost').forEach(b=>b.style.borderColor='');
+  document.getElementById('filter-'+f).style.borderColor='var(--purple-neon)';
+  let filtered = tasks;
+  if(f==='active') filtered=tasks.filter(t=>!t.done);
+  if(f==='done') filtered=tasks.filter(t=>t.done);
+  document.getElementById('full-tasks-list').innerHTML = filtered.map(t=>renderTaskItem(t)).join('');
 }
 
-// ============ EMPLOYEES ============
-async function renderEmployees() {
-  const role = currentProfile.role;
-  let query = sb.from('profiles').select('*, departments(name)').order('full_name');
-  if (role === 'manager') query = query.eq('department_id', currentProfile.department_id);
-
-  const { data: emps } = await query;
-  const list = emps || [];
-
-  let html = `
-    <div class="table-wrap">
-      <div class="table-header">
-        <div class="table-title">${role === 'manager' ? 'Мой отдел' : 'Все сотрудники'} <span style="color:var(--muted);font-weight:400;font-size:13px;">(${list.length})</span></div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <input class="search-input" placeholder="🔍 Поиск..." oninput="filterTable(this.value)" id="emp-search" />
-          ${role === 'superadmin' ? `<button class="btn btn-primary btn-sm" onclick="navigate('add-user')">+ Добавить</button>` : ''}
-        </div>
-      </div>
-      <table id="emp-table">
-        <thead><tr>
-          <th>Сотрудник</th>
-          <th>Отдел</th>
-          <th>Роль</th>
-          <th>Статус</th>
-          ${role === 'superadmin' ? '<th>Действия</th>' : ''}
-        </tr></thead>
-        <tbody id="emp-tbody">`;
-
-  if (list.length === 0) {
-    html += `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted)">Нет сотрудников</td></tr>`;
-  } else {
-    list.forEach(emp => {
-      html += empRow(emp, role);
-    });
-  }
-
-  html += `</tbody></table></div>`;
-  document.getElementById('content').innerHTML = html;
-  document.getElementById('content')._empData = list;
+// ============ FAQ ============
+function toggleFaq(el){
+  const ans=el.nextElementSibling;
+  const icon=el.querySelector('.faq-icon');
+  const isOpen=ans.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a=>a.classList.remove('open'));
+  document.querySelectorAll('.faq-icon').forEach(i=>i.style.transform='');
+  if(!isOpen){ans.classList.add('open');icon.style.transform='rotate(180deg)';}
 }
 
-function empRow(emp, role) {
-  return `<tr data-id="${emp.id}" data-name="${(emp.full_name||'').toLowerCase()}" data-email="${(emp.email||'').toLowerCase()}">
-    <td><div class="avatar-row">
-      <div class="av">${initials(emp.full_name)}</div>
-      <div><div class="av-name">${esc(emp.full_name)}</div><div class="av-email">${esc(emp.email||'')}</div></div>
-    </div></td>
-    <td style="color:var(--muted2)">${esc(emp.departments?.name || '—')}</td>
-    <td>${roleBadge(emp.role)}</td>
-    <td>${statusBadge(emp.is_active)}</td>
-    ${role === 'superadmin' ? `<td>
-      <div style="display:flex;gap:6px;">
-        <button class="btn btn-ghost btn-sm" onclick="editEmployee('${emp.id}')">✏️ Ред.</button>
-        <button class="btn ${emp.is_active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleActive('${emp.id}',${emp.is_active})">${emp.is_active ? 'Откл.' : 'Вкл.'}</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}','${esc(emp.full_name)}')">🗑</button>
-      </div>
-    </td>` : ''}
-  </tr>`;
-}
-
-function filterTable(q) {
-  const rows = document.querySelectorAll('#emp-tbody tr[data-id]');
-  q = q.toLowerCase();
-  rows.forEach(row => {
-    const match = row.dataset.name.includes(q) || row.dataset.email.includes(q);
-    row.style.display = match ? '' : 'none';
-  });
-}
-
-// ============ DEPARTMENTS ============
-async function renderDepartments() {
-  const { data: depts } = await sb.from('departments').select('*').order('name');
-  const { data: emps } = await sb.from('profiles').select('department_id, role');
-  const list = depts || [];
-
-  const countMap = {};
-  (emps||[]).forEach(e => { if(e.department_id) countMap[e.department_id] = (countMap[e.department_id]||0)+1; });
-
-  let html = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div></div>
-      <button class="btn btn-primary" onclick="showAddDeptModal()">+ Новый отдел</button>
+// ============ SUPPORT ============
+let ticketCount=2;
+function submitTicket(){
+  const text=document.getElementById('sup-text').value.trim();
+  if(!text){showToast('⚠️','Заполните описание обращения');return;}
+  ticketCount++;
+  const dept=document.getElementById('sup-dept').value;
+  const topic=document.getElementById('sup-topic').value;
+  const priority=document.getElementById('sup-priority').value;
+  const newTicket=`<div class="ticket-item">
+    <div class="ticket-header">
+      <span class="ticket-title">${topic}</span>
+      <span class="ticket-status open">В ОБРАБОТКЕ</span>
     </div>
-    <div class="dept-grid">`;
-
-  if (list.length === 0) {
-    html += `<div class="empty"><div class="empty-icon">🏢</div><p>Нет отделов. Создайте первый!</p></div>`;
-  } else {
-    list.forEach(d => {
-      html += `<div class="dept-card">
-        <h3>🏢 ${esc(d.name)}</h3>
-        <div class="dept-stat">👥 ${countMap[d.id]||0} сотрудников</div>
-        <div style="display:flex;gap:8px;margin-top:14px;">
-          <button class="btn btn-ghost btn-sm" onclick="editDept('${d.id}','${esc(d.name)}')">✏️ Переименовать</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteDept('${d.id}','${esc(d.name)}')">🗑</button>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += `</div>`;
-  document.getElementById('content').innerHTML = html;
-}
-
-// ============ ADD USER ============
-function renderAddUser() {
-  const deptsOptions = allDepts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('');
-  document.getElementById('content').innerHTML = `
-    <div style="max-width:480px;">
-      <div class="profile-card">
-        <h3 style="font-family:var(--display);font-size:18px;font-weight:800;color:#fff;margin-bottom:20px;">Новый сотрудник</h3>
-        <div id="add-error" class="alert alert-error" style="display:none;"></div>
-        <div class="form-group">
-          <label class="form-label">Полное имя</label>
-          <input class="form-input" id="add-name" placeholder="Иван Иванов" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input class="form-input" id="add-email" type="email" placeholder="ivan@company.com" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Пароль</label>
-          <input class="form-input" id="add-pass" type="password" placeholder="Минимум 6 символов" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Роль</label>
-          <select class="form-select" id="add-role">
-            <option value="employee">Сотрудник</option>
-            <option value="manager">Руководитель отдела</option>
-            <option value="superadmin">Главный руководитель</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Отдел</label>
-          <select class="form-select" id="add-dept">
-            <option value="">— Без отдела —</option>
-            ${deptsOptions}
-          </select>
-        </div>
-        <button class="btn btn-primary btn-full" id="add-btn" onclick="doAddUser()">Создать аккаунт</button>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:12px;padding:0 4px;">
-        ⚠️ После создания сотрудник сможет войти с указанным email и паролем
-      </p>
-    </div>`;
-}
-
-async function doAddUser() {
-  const name = document.getElementById('add-name').value.trim();
-  const email = document.getElementById('add-email').value.trim();
-  const pass = document.getElementById('add-pass').value;
-  const role = document.getElementById('add-role').value;
-  const deptId = document.getElementById('add-dept').value;
-  const err = document.getElementById('add-error');
-  const btn = document.getElementById('add-btn');
-
-  if (!name || !email || !pass) { showErr(err, 'Заполни все обязательные поля'); return; }
-  if (pass.length < 6) { showErr(err, 'Пароль минимум 6 символов'); return; }
-
-  btn.disabled = true; btn.textContent = 'Создание...';
-
-  // Create auth user via Supabase admin (requires service role — use signUp for now)
-  const { data, error } = await sb.auth.signUp({
-    email, password: pass,
-    options: { data: { full_name: name } }
-  });
-
-  if (error) { showErr(err, error.message); btn.disabled = false; btn.textContent = 'Создать аккаунт'; return; }
-
-  if (data.user) {
-    // Update profile
-    await sb.from('profiles').update({
-      full_name: name,
-      role: role,
-      department_id: deptId || null
-    }).eq('id', data.user.id);
-  }
-
-  btn.disabled = false; btn.textContent = 'Создать аккаунт';
-  toast(`✅ Сотрудник ${name} создан!`, 'success');
-  // Clear form
-  ['add-name','add-email','add-pass'].forEach(id => document.getElementById(id).value = '');
-  err.style.display = 'none';
-}
-
-// ============ PROFILE ============
-function renderProfile() {
-  const p = currentProfile;
-  const deptName = p.departments?.name || '—';
-  document.getElementById('content').innerHTML = `
-    <div class="profile-card">
-      <div class="profile-av">${initials(p.full_name)}</div>
-      <div class="profile-name">${esc(p.full_name)}</div>
-      <div class="profile-role">${roleLabel(p.role)}</div>
-      <div class="profile-row"><span class="profile-key">Email</span><span class="profile-val">${esc(p.email||'—')}</span></div>
-      <div class="profile-row"><span class="profile-key">Отдел</span><span class="profile-val">${esc(deptName)}</span></div>
-      <div class="profile-row"><span class="profile-key">Роль</span><span class="profile-val">${roleBadge(p.role)}</span></div>
-      <div class="profile-row"><span class="profile-key">Статус</span><span class="profile-val">${statusBadge(p.is_active)}</span></div>
-      <div class="profile-row"><span class="profile-key">В системе с</span><span class="profile-val">${formatDate(p.created_at)}</span></div>
-    </div>`;
-}
-
-// ============ EDIT EMPLOYEE ============
-async function editEmployee(id) {
-  const { data: emp } = await sb.from('profiles').select('*').eq('id', id).single();
-  if (!emp) return;
-
-  const deptsOptions = allDepts.map(d =>
-    `<option value="${d.id}" ${emp.department_id === d.id ? 'selected' : ''}>${esc(d.name)}</option>`
-  ).join('');
-
-  showModal(`
-    <h3>Редактировать сотрудника</h3>
-    <div class="form-group">
-      <label class="form-label">Полное имя</label>
-      <input class="form-input" id="edit-name" value="${esc(emp.full_name)}" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Роль</label>
-      <select class="form-select" id="edit-role">
-        <option value="employee" ${emp.role==='employee'?'selected':''}>Сотрудник</option>
-        <option value="manager" ${emp.role==='manager'?'selected':''}>Руководитель отдела</option>
-        <option value="superadmin" ${emp.role==='superadmin'?'selected':''}>Главный руководитель</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Отдел</label>
-      <select class="form-select" id="edit-dept">
-        <option value="">— Без отдела —</option>
-        ${deptsOptions}
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-primary" onclick="saveEmployee('${id}')">Сохранить</button>
-    </div>
-  `);
-}
-
-async function saveEmployee(id) {
-  const name = document.getElementById('edit-name').value.trim();
-  const role = document.getElementById('edit-role').value;
-  const deptId = document.getElementById('edit-dept').value;
-  const { error } = await sb.from('profiles').update({
-    full_name: name, role, department_id: deptId || null
-  }).eq('id', id);
-  if (error) { toast('Ошибка: ' + error.message, 'error'); return; }
-  closeModal();
-  toast('✅ Изменения сохранены', 'success');
-  navigate('employees');
-}
-
-async function toggleActive(id, currentState) {
-  const { error } = await sb.from('profiles').update({ is_active: !currentState }).eq('id', id);
-  if (error) { toast('Ошибка', 'error'); return; }
-  toast(currentState ? 'Сотрудник отключён' : '✅ Сотрудник активирован', 'success');
-  navigate('employees');
-}
-
-async function deleteEmployee(id, name) {
-  showModal(`
-    <h3>Удалить сотрудника?</h3>
-    <p style="color:var(--muted2);margin-bottom:4px;">Вы уверены что хотите удалить <strong style="color:#fff">${name}</strong>?</p>
-    <p style="font-size:12px;color:var(--red);">Это действие нельзя отменить.</p>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-danger" onclick="doDelete('${id}')">Удалить</button>
-    </div>
-  `);
-}
-
-async function doDelete(id) {
-  await sb.from('profiles').delete().eq('id', id);
-  closeModal();
-  toast('Сотрудник удалён', 'success');
-  navigate('employees');
-}
-
-// ============ DEPARTMENTS CRUD ============
-function showAddDeptModal() {
-  showModal(`
-    <h3>Новый отдел</h3>
-    <div class="form-group">
-      <label class="form-label">Название отдела</label>
-      <input class="form-input" id="dept-name" placeholder="Разработка, Маркетинг..." />
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-primary" onclick="doAddDept()">Создать</button>
-    </div>
-  `);
-}
-
-async function doAddDept() {
-  const name = document.getElementById('dept-name').value.trim();
-  if (!name) return;
-  const { error } = await sb.from('departments').insert({ name });
-  if (error) { toast('Ошибка: ' + error.message, 'error'); return; }
-  const { data } = await sb.from('departments').select('*').order('name');
-  allDepts = data || [];
-  closeModal();
-  toast('✅ Отдел создан', 'success');
-  navigate('departments');
-}
-
-function editDept(id, name) {
-  showModal(`
-    <h3>Переименовать отдел</h3>
-    <div class="form-group">
-      <label class="form-label">Новое название</label>
-      <input class="form-input" id="dept-edit-name" value="${name}" />
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-primary" onclick="doEditDept('${id}')">Сохранить</button>
-    </div>
-  `);
-}
-
-async function doEditDept(id) {
-  const name = document.getElementById('dept-edit-name').value.trim();
-  if (!name) return;
-  await sb.from('departments').update({ name }).eq('id', id);
-  const { data } = await sb.from('departments').select('*').order('name');
-  allDepts = data || [];
-  closeModal();
-  toast('✅ Отдел переименован', 'success');
-  navigate('departments');
-}
-
-function deleteDept(id, name) {
-  showModal(`
-    <h3>Удалить отдел?</h3>
-    <p style="color:var(--muted2);">Удалить отдел <strong style="color:#fff">${name}</strong>? Сотрудники останутся без отдела.</p>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn btn-danger" onclick="doDeleteDept('${id}')">Удалить</button>
-    </div>
-  `);
-}
-
-async function doDeleteDept(id) {
-  await sb.from('departments').delete().eq('id', id);
-  const { data } = await sb.from('departments').select('*').order('name');
-  allDepts = data || [];
-  closeModal();
-  toast('Отдел удалён', 'success');
-  navigate('departments');
+    <div class="ticket-meta">28.04.2025 · ${dept.split(' ')[0]} · Приоритет: ${priority}</div>
+  </div>`;
+  document.getElementById('tickets-list').insertAdjacentHTML('afterbegin',newTicket);
+  document.getElementById('sup-text').value='';
+  showToast('✅','Запрос #'+ticketCount+' отправлен! Ответим в течение 2 рабочих дней.');
 }
 
 // ============ MODAL ============
-function showModal(html) {
-  const c = document.getElementById('modal-container');
-  c.innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;
+function openDeptModal(key){
+  const d=deptInfo[key];
+  let html=`<div class="modal-section">
+    <div class="modal-section-title">РУКОВОДИТЕЛЬ</div>
+    <div class="modal-text">${d.head}</div>
+  </div>`;
+  d.roles.forEach(r=>{
+    html+=`<div class="modal-section">
+      <div class="modal-section-title">// ${r.name.toUpperCase()}</div>
+      <ul class="func-list">${r.funcs.map(f=>`<li>${f}</li>`).join('')}</ul>
+    </div>`;
+  });
+  document.getElementById('modal-title').textContent=d.title;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('modal-container').innerHTML = ''; }
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
 
 // ============ TOAST ============
-function toast(msg, type='success') {
-  const c = document.getElementById('toast-container');
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<span>${type==='success'?'✅':'❌'}</span> ${msg}`;
-  c.appendChild(el);
-  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 3000);
+let toastTimer;
+function showToast(icon,text){
+  clearTimeout(toastTimer);
+  document.getElementById('toast-icon').textContent=icon;
+  document.getElementById('toast-text').textContent=text;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
 }
-
-// ============ HELPERS ============
-function esc(str) { return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function initials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-function formatDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}); }
-
-function roleLabel(role) {
-  return { superadmin: 'Главный руководитель', manager: 'Руководитель отдела', employee: 'Сотрудник' }[role] || role;
-}
-
-function roleBadge(role) {
-  const map = {
-    superadmin: ['badge-red', '⭐ Главный'],
-    manager:    ['badge-purple', '🔷 Руководитель'],
-    employee:   ['badge-blue', '👤 Сотрудник'],
-  };
-  const [cls, label] = map[role] || ['badge-blue', role];
-  return `<span class="badge ${cls}">${label}</span>`;
-}
-
-function statusBadge(active) {
-  return active
-    ? `<span class="badge badge-green">● Активен</span>`
-    : `<span class="badge badge-amber">○ Отключён</span>`;
-}
-
-// ============ START ============
-init();
 </script>
 </body>
 </html>
